@@ -1,11 +1,11 @@
-body {
+.body_index {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
     font-family: sans-serif;
-    background-color: #f9f9f9; /* Light background */
+    background-color: #f5f5f5;
 }
 
 .container {
@@ -19,13 +19,19 @@ body {
     text-align: center;
     font-style: italic;
     font-size: 100px;
-    
     background-image: linear-gradient(to right, yellow, green,blue, indigo, violet,red );
-    background-clip: text;
+    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-size: 200% 100%;
     
-
+} 
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    font-style: italic;
+    background: linear-gradient(to right, yellow, green, lightblue, blue, purple, pink);
+    -webkit-background-clip: text;
+    color: transparent;
 }
 .desc1 {
     font-size: 1.2em;
@@ -56,4 +62,114 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.body_main {
+    display: justify;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    background-color: #f5f5f5;
+}
+
+#employee-container {
+    margin-top: 50px;
+    margin-left: 1px;
+    margin-right: 1px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 55px;  /* space between row and colums */
+    justify-content: center;
+}
+
+.employee-card {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    background: white;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    min-height: 150px; /* to ensure that all card has the same height  */
+    position: relative;
+    overflow: hidden;
+    align-items: stretch;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-right: #444;
+     
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 15px;
+}
+
+.info h3 {
+    font-size: 16px;
+    color: #444;
+}
+
+.info p {
+    font-size: 14px;
+    color: gray;
+}
+
+.color-bar {
+    width: 100%;
+    height: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.top-bar {
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(to right, yellow, green, lightblue, blue, purple, pink);
+}
+
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 50px;
+    background: white;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links li {
+    display: inline;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color:rgb(82, 123, 211);
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.nav-links a:hover {
+    color: #333;
 }
