@@ -18,7 +18,9 @@
     font-weight: 20;
     text-align: center;
     font-style: italic;
-    font-size: 100px;
+    font-size: 70px;
+    margin-right: 750px;
+    padding-left: 20px;
     background-image: linear-gradient(to right, yellow, green,blue, indigo, violet,red );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -26,13 +28,19 @@
     
 } 
 .logo {
-    font-size: 28px;
-    font-weight: bold;
+    font-family: serif ;
+    font-weight: 20;
+    text-align: center;
     font-style: italic;
-    background: linear-gradient(to right, yellow, green, lightblue, blue, purple, pink);
+    font-size: 70px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    background-image: linear-gradient(to right, yellow, green,blue, indigo, violet,red );
     -webkit-background-clip: text;
-    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 100%;
 }
+
 .desc1 {
     font-size: 1.2em;
     margin-bottom: 30px;
@@ -73,7 +81,6 @@
 }
 
 .body_main {
-    display: justify;
     justify-content: center;
     align-items: center;
     min-height: 70vh;
@@ -84,9 +91,10 @@
     margin-top: 50px;
     margin-left: 1px;
     margin-right: 1px;
+    padding-top: 100px;
     display: flex;
     flex-wrap: wrap;
-    gap: 55px;  /* space between row and colums */
+    gap: 60px;  /* space between row and colums */
     justify-content: center;
 }
 
@@ -134,42 +142,58 @@
     bottom: 0;
     left: 0;
 }
+
+header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index:1000 ; /* insure that the nav bar will not be under the content */
+}
+
 .top-bar {
+  
     width: 100%;
     height: 10px;
     background: linear-gradient(to right, yellow, green, lightblue, blue, purple, pink);
 }
 
 
-.navbar {
+.collapse navbar-collapse{
+    
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 50px;
+    padding-right: 0;
     background: white;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    
 }
 
 
-
-
-.nav-links {
-    list-style: none;
+.navbar-nav {
     display: flex;
     gap: 20px;
+    
+}
+.navbar{
+    padding-right: 20px;
 }
 
-.nav-links li {
+.navbar-nav li {
     display: inline;
 }
 
-.nav-links a {
-    text-decoration: none;
+.navbar-nav a {
+    
+    
     color:rgb(82, 123, 211);
     font-size: 16px;
     font-weight: bold;
 }
 
-.nav-links a:hover {
+.navbar-nav a:hover {
     color: #333;
+}
+.navbar-toggler{
+    margin-right: 2px;
 }
