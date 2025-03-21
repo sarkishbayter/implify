@@ -257,28 +257,21 @@ $(container).on("click", function(event) {
         $("#details-city").text(employee.city);
         $("#details-country").text(employee.country);
 
-        $(container).animate({ marginRight: '300px' }, 300); 
+        $(container).animate({ marginRight: '300px' }, 100); 
         $(detailsDiv).addClass("show");
     }
 });
 
-/*const closeDetailsButton = document.getElementById("close-details");
-
-$(closeDetailsButton).on("click", function() {
-    $(container).animate({ marginRight: '1px' }, 300); 
-    $(detailsDiv).removeClass("show");
-});
-*/
 const closeDetailsButton = document.getElementById("close-details");
 
-if (closeDetailsButton) {
-    $(closeDetailsButton).on("click", function() {
-        $("#employee-container").animate({ marginRight: '1px' }, 300);
-        $("#employee-details").removeClass("show");
-    });
-} else {
-    console.error("Close button not found!");
-}
+$(closeDetailsButton).on("click", function() {
+    $(container).animate({ marginRight: '1px' }, 100); 
+    $(detailsDiv).removeClass("show");
+    $(".employee-card.selected").removeClass("selected");
+    console.log("x is visible");
+});
+
+
 
 
 
