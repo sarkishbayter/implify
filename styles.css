@@ -1,3 +1,5 @@
+
+/* loading page  */
 .body_index {
     display: flex;
     justify-content: center;
@@ -12,21 +14,7 @@
     text-align: center;
 }
 
-.rainbow{
-    
-    font-family: serif ;
-    font-weight: 20;
-    text-align: center;
-    font-style: italic;
-    font-size: 70px;
-    margin-right: 750px;
-    padding-left: 20px;
-    background-image: linear-gradient(to right, yellow, green,blue, indigo, violet,red );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-size: 200% 100%;
-    
-} 
+
 .logo {
     font-family: serif ;
     font-weight: 20;
@@ -72,13 +60,16 @@
     100% { transform: rotate(360deg); }
 }
 
+/* end of loading page  */
 
+/* employee list  */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-family: 'Arial', sans-serif;
 }
+
 
 .body_main {
     justify-content: center;
@@ -114,8 +105,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-right: #444;
-     
 }
 
 .info {
@@ -142,7 +131,9 @@
     bottom: 0;
     left: 0;
 }
+/* end of employee list  */
 
+/* header */
 header{
     position: fixed;
     top: 0;
@@ -150,6 +141,20 @@ header{
     width: 100%;
     z-index:1000 ; /* insure that the nav bar will not be under the content */
 }
+.rainbow{
+    
+    font-family: serif ;
+    font-weight: 20;
+    text-align: center;
+    font-style: italic;
+    font-size: 70px;
+    margin-right: 20px;
+    padding-left: 20px;
+    background-image: linear-gradient(to right, yellow, green,blue, indigo, violet,red );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  
+} 
 
 .top-bar {
   
@@ -158,25 +163,26 @@ header{
     background: linear-gradient(to right, yellow, green, lightblue, blue, purple, pink);
 }
 
+/* end of header */
 
+/* navigation bar */
 .collapse navbar-collapse{
     
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding-right: 0;
     background: white;
     
 }
 
+.navbar{
+    padding-right: 20px;
+}
 
 .navbar-nav {
     display: flex;
-    gap: 20px;
+    margin-left: auto;
     
-}
-.navbar{
-    padding-right: 20px;
 }
 
 .navbar-nav li {
@@ -184,8 +190,6 @@ header{
 }
 
 .navbar-nav a {
-    
-    
     color:rgb(82, 123, 211);
     font-size: 16px;
     font-weight: bold;
@@ -197,3 +201,150 @@ header{
 .navbar-toggler{
     margin-right: 2px;
 }
+
+/* end of navigation bar */
+
+
+/* employee details  */
+
+/* Employee Details */
+
+#employee-details {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    margin-top: 135px;
+    right: -400px; /* Initially off-screen */
+    width: 350px;
+    height: 100%;
+    background:#f0f0f0;
+    border: 1px solid #ddd;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    transition: right 0.3s ease; /* animation */
+    overflow-y: auto;
+    padding: 20px;
+    text-align: left;
+    
+}
+
+
+#employee-details .details-bar {
+    width: 100%;
+    height: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.employee-card.selected {
+    border: 2px solid blue;
+}
+
+#employee-details.show {
+    right: 0;
+}
+
+#employee-details .details-content {
+    flex-grow: 1;
+    position: relative;
+}
+
+#employee-details #close-details {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+#employee-details .details-image {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#employee-details .details-image img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    padding-left: 2px;
+}
+#employee-details .details-content .address{
+    margin-top: 30px;
+    color: #444;
+    font-weight: 200;
+    
+}
+
+#employee-details p {
+    margin-bottom: 5px;
+}
+#employee-details .address{
+    margin-top: 5px;
+}
+
+#employee-details .details-actions {
+    justify-content: flex-end;
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    padding-right: 2px;
+}
+
+#employee-details .details-action {
+    font-weight: bold;
+    color: #444;
+    padding-top: 5px;
+    width: fit-content;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    
+}
+
+#employee-details .delete-action {
+    background-color: #e74c3c;
+    color: white;
+}
+@media (max-width: 768px) {
+    #employee-details {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        z-index: 1003; /* Ensure details are on top */
+    }
+
+    #close-details {
+        position: absolute; /* Essential for z-index to work */
+        top: 10px;
+        right: 10px;
+        z-index: 1004; /* Ensure close button is on top */
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 30px;
+        min-height: 30px;
+        padding: 5px 10px;
+
+        background-color: rgba(255, 255, 255, 0.8); /* Added background for visibility */
+        border: 1px solid #ccc; /* Added border for visibility */
+        border-radius: 5px;
+
+        font-size: 20px;
+        color: #333;
+        text-align: center;
+        cursor: pointer;
+    }
+}
+
+
+/* end of employee deails  */

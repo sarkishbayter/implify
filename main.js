@@ -194,10 +194,13 @@ console.log(allemploye); // testing if employes data appear in the console
 
 const container = document.getElementById("employee-container");
 
-allemploye.forEach(emp => {
-    // Create the main card div
+
+allemploye.forEach((emp , index )=> {
+    // Create the card div
     const card = document.createElement("div");
     card.classList.add("employee-card");
+    card.dataset.index=index;
+     /* used for specifing wich employe is clicked on to show details*/
 
     // Create the image container
     const imageContainer = document.createElement("div");
@@ -226,12 +229,60 @@ allemploye.forEach(emp => {
     colorBar.classList.add("color-bar");
     colorBar.style.backgroundColor = `${emp.color}`;
 
+    
+
     // Append everything
     card.appendChild(imageContainer);
     card.appendChild(info);
     card.appendChild(colorBar);
     container.appendChild(card);
 });
+
+const detailsDiv = document.getElementById("employee-details");
+
+
+$(container).on("click", function(event) {
+    const card = $(event.target).closest(".employee-card");
+    if (card.length) {
+        $(".employee-card.selected").removeClass("selected");
+        card.addClass("selected");
+
+        const index = card.data("index");
+        const employee = allemploye[index];
+
+        $("#details-photo").attr("src", employee.photo);
+        $("#details-name").text(`${employee.fname} ${employee.lname}`).css("color", employee.color);
+        $("#details-company").text(employee.company);
+        $("#details-address").text(employee.address);
+        $("#details-city").text(employee.city);
+        $("#details-country").text(employee.country);
+
+        $(container).animate({ marginRight: '300px' }, 300); 
+        $(detailsDiv).addClass("show");
+    }
+});
+
+/*const closeDetailsButton = document.getElementById("close-details");
+
+$(closeDetailsButton).on("click", function() {
+    $(container).animate({ marginRight: '1px' }, 300); 
+    $(detailsDiv).removeClass("show");
+});
+*/
+const closeDetailsButton = document.getElementById("close-details");
+
+if (closeDetailsButton) {
+    $(closeDetailsButton).on("click", function() {
+        $("#employee-container").animate({ marginRight: '1px' }, 300);
+        $("#employee-details").removeClass("show");
+    });
+} else {
+    console.error("Close button not found!");
+}
+
+
+
+
 
 
 
