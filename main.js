@@ -21,7 +21,7 @@ let josephine={
     city:' Brighton',
     country:'Livingston',
     color:' #8a3b93',
-    photo:'images/default.webp',
+    photo:'images/default.jpg',
 
 };
 let art={
@@ -33,7 +33,7 @@ let art={
     city:' Bridgeport',
     country:'Gloucester',
     color:' #1473bb',
-    photo:'images/default.webp',
+    photo:'images/default.jpg',
 
 };
 let lenna={
@@ -45,7 +45,7 @@ let lenna={
     city:' Anchorage',
     country:'Anchorage',
     color:' #c32482',
-    photo:'images/default.webp',
+    photo:'images/default.jpg',
 
 };
 let simona={
@@ -57,7 +57,7 @@ let simona={
     city:' Ashland',
     country:'Ashland',
     color:' #8a3b93',
-    photo:'images/default.webp',
+    photo:'images/default.jpg',
 
 };
 
@@ -71,7 +71,7 @@ let donette={
     city:' Hamilton',
     country:'Butler',
     color:' #c32482',
-    photo:'images/default.webp',
+    photo:'images/default.jpg',
 
 };
 
@@ -84,7 +84,7 @@ let mitsue={
     city:' Chicago',
     country:'Cook',
     color:' #8bc447',
-    photo:'images/default.webp',
+    photo:'images/default.jpg',
 
 };
 let leota={
@@ -96,7 +96,7 @@ let leota={
     city:'  SanJose',
     country:'SantaClara',
     color:' #dde553',
-    photo:'images/default.webp',
+    photo:'images/default.jpg',
 
 };
 
@@ -122,7 +122,7 @@ let kris={
     city:'  Baltimore',
     country:'Baltimore',
     color:'  #c32482',
-    photo:'images/default.webp',
+    photo:'images/default.jpg',
 
 };
 let minna={
@@ -146,7 +146,7 @@ let abel={
     city:'  Middle Island',
     country:'Suffolk',
     color:'  #1473bb',
-    photo:'images/default.webp',
+    photo:'images/default.jpg',
 
 };
 let kiley={
@@ -158,7 +158,7 @@ let kiley={
     city:' Los Angeles',
     country:'Los Angeles',
     color:'  #1473bb',
-    photo:'images/default.webp',
+    photo:'images/default.jpg',
 
 };
 let bette={
@@ -170,7 +170,7 @@ let bette={
     city:' Chagrin Falls',
     country:'Geauga',
     color:'  #8bc447',
-    photo:'images/default.webp',
+    photo:'images/default.jpg',
 
 };
 let veronika={
@@ -182,7 +182,7 @@ let veronika={
     city:' Laredo',
     country:'Webb',
     color:'  #8bc447',
-    photo:'images/default.webp',
+    photo:'images/default.jpg',
 
 };
 
