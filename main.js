@@ -194,8 +194,9 @@ console.log(allemploye); // testing if employes data appear in the console
 
 const container = document.getElementById("employee-container");
 
-
+// creating employe list 
 allemploye.forEach((emp , index )=> {
+
     // Create the card div
     const card = document.createElement("div");
     card.classList.add("employee-card");
@@ -238,11 +239,13 @@ allemploye.forEach((emp , index )=> {
     container.appendChild(card);
 });
 
+
 const detailsDiv = document.getElementById("employee-details");
 
-
+// creating details section 
 $(container).on("click", function(event) {
     const card = $(event.target).closest(".employee-card");
+
     if (card.length) {
         $(".employee-card.selected").removeClass("selected");
         card.addClass("selected");
@@ -256,7 +259,8 @@ $(container).on("click", function(event) {
         $("#details-address").text(employee.address);
         $("#details-city").text(employee.city);
         $("#details-country").text(employee.country);
-
+        $("#employee-details").css("border-color", employee.color);
+        $(".details-bar").css("background-color",employee.color)
         $(container).animate({ marginRight: '300px' }, 100); 
         $(detailsDiv).addClass("show");
     }
