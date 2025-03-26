@@ -1,5 +1,5 @@
 // static data using objects
-
+/*
 let james={
 
     fname:'James',
@@ -190,91 +190,94 @@ let veronika={
 let allemploye=[]; // array containing all employes
 allemploye.push(james,josephine,art,lenna,donette,simona,mitsue,leota,sage,kris,minna,abel,kiley,bette,veronika);
 console.log(allemploye); // testing if employes data appear in the console
-
+*/
 
 const container = document.getElementById("employee-container");
 
-// creating employe list 
-allemploye.forEach((emp , index )=> {
+fetch('http://127.0.0.1:30000/api/employees')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(allemploye => {
+        container.innerHTML = '';
 
-    // Create the card div
-    const card = document.createElement("div");
-    card.classList.add("employee-card");
-    card.dataset.index=index;
-     /* used for specifing wich employe is clicked on to show details*/
+        allemploye.forEach((emp, index) => {
+            const card = document.createElement("div");
+            card.classList.add("employee-card");
+            card.dataset.index = index;
 
-    // Create the image container
-    const imageContainer = document.createElement("div");
-    imageContainer.classList.add("image-container");
+            const imageContainer = document.createElement("div");
+            imageContainer.classList.add("image-container");
 
-    const img = document.createElement("img");
-    img.src = `${emp.photo}`;
-    img.alt = `${emp.fname}`;
-    imageContainer.appendChild(img);
+            const img = document.createElement("img");
+            img.src = `${emp.photo}`;
+            img.alt = `${emp.fname}`;
+            imageContainer.appendChild(img);
 
-    // Create the info section
-    const info = document.createElement("div");
-    info.classList.add("info");
+            const info = document.createElement("div");
+            info.classList.add("info");
 
-    const name = document.createElement("h3");
-    name.innerHTML = `${emp.fname}  ${emp.lname}`;
+            const name = document.createElement("h3");
+            name.innerHTML = `${emp.fname} ${emp.lname}`;
 
-    const comp = document.createElement("p");
-    comp.innerHTML = `${emp.company}`;
+            const comp = document.createElement("p");
+            comp.innerHTML = `${emp.company}`; // Now uses emp.company
 
-    info.appendChild(name);
-    info.appendChild(comp);
+            info.appendChild(name);
+            info.appendChild(comp);
 
-    // Create the color bar
-    const colorBar = document.createElement("div");
-    colorBar.classList.add("color-bar");
-    colorBar.style.backgroundColor = `${emp.color}`;
+            const colorBar = document.createElement("div");
+            colorBar.classList.add("color-bar");
+            colorBar.style.backgroundColor = `${emp.companyColor}`; // Use companyColor for the bar
 
-    
+            card.appendChild(imageContainer);
+            card.appendChild(info);
+            card.appendChild(colorBar);
+            container.appendChild(card);
+        });
 
-    // Append everything
-    card.appendChild(imageContainer);
-    card.appendChild(info);
-    card.appendChild(colorBar);
-    container.appendChild(card);
-});
+        const detailsDiv = document.getElementById("employee-details");
 
+        $(container).on("click", function(event) {
+            const card = $(event.target).closest(".employee-card");
 
-const detailsDiv = document.getElementById("employee-details");
+            if (card.length) {
+                $(".employee-card.selected").removeClass("selected");
+                card.addClass("selected");
 
-// creating details section 
-$(container).on("click", function(event) {
-    const card = $(event.target).closest(".employee-card");
+                const index = card.data("index");
+                const employee = allemploye[index];
 
-    if (card.length) {
-        $(".employee-card.selected").removeClass("selected");
-        card.addClass("selected");
+                $("#details-photo").attr("src", employee.photo);
+                $("#details-name").text(`${employee.fname} ${employee.lname}`).css("color", employee.color);
+                $("#details-company").text(employee.company); // Now uses emp.company
+                $("#details-address").text(employee.address);
+                $("#details-city").text(employee.city);
+                $("#details-country").text(employee.country);
+                $("#employee-details").css("border-color", employee.color); // Use companyColor for border
+                $(".details-bar").css("background-color", employee.color); // Use companyColor for bar
+                $(container).animate({ marginRight: '300px' }, 100);
+                $(detailsDiv).addClass("show");
+            }
+        });
 
-        const index = card.data("index");
-        const employee = allemploye[index];
+        const closeDetailsButton = document.getElementById("close-details");
 
-        $("#details-photo").attr("src", employee.photo);
-        $("#details-name").text(`${employee.fname} ${employee.lname}`).css("color", employee.color);
-        $("#details-company").text(employee.company);
-        $("#details-address").text(employee.address);
-        $("#details-city").text(employee.city);
-        $("#details-country").text(employee.country);
-        $("#employee-details").css("border-color", employee.color);
-        $(".details-bar").css("background-color",employee.color)
-        $(container).animate({ marginRight: '300px' }, 100); 
-        $(detailsDiv).addClass("show");
-    }
-});
+        $(closeDetailsButton).on("click", function() {
+            $(container).animate({ marginRight: '1px' }, 100);
+            $(detailsDiv).removeClass("show");
+            $(".employee-card.selected").removeClass("selected");
+            console.log("x is visible");
+        });
+    })
 
-const closeDetailsButton = document.getElementById("close-details");
-
-$(closeDetailsButton).on("click", function() {
-    $(container).animate({ marginRight: '1px' }, 100); 
-    $(detailsDiv).removeClass("show");
-    $(".employee-card.selected").removeClass("selected");
-    console.log("x is visible");
-});
-
+    .catch(error => {
+        console.error('Error fetching employee data:', error);
+        container.innerHTML = '<p>Failed to load employee data.</p>';
+    });
 
 
 
