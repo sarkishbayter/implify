@@ -224,14 +224,14 @@ fetch('http://127.0.0.1:30000/api/employees')
             name.innerHTML = `${emp.fname} ${emp.lname}`;
 
             const comp = document.createElement("p");
-            comp.innerHTML = `${emp.company}`; // Now uses emp.company
+            comp.innerHTML = `${emp.company}`; 
 
             info.appendChild(name);
             info.appendChild(comp);
 
             const colorBar = document.createElement("div");
             colorBar.classList.add("color-bar");
-            colorBar.style.backgroundColor = `${emp.companyColor}`; // Use companyColor for the bar
+            colorBar.style.backgroundColor = `${emp.companyColor}`; 
 
             card.appendChild(imageContainer);
             card.appendChild(info);
@@ -253,12 +253,12 @@ fetch('http://127.0.0.1:30000/api/employees')
 
                 $("#details-photo").attr("src", employee.photo);
                 $("#details-name").text(`${employee.fname} ${employee.lname}`).css("color", employee.color);
-                $("#details-company").text(employee.company); // Now uses emp.company
+                $("#details-company").text(employee.company);
                 $("#details-address").text(employee.address);
                 $("#details-city").text(employee.city);
                 $("#details-country").text(employee.country);
-                $("#employee-details").css("border-color", employee.color); // Use companyColor for border
-                $(".details-bar").css("background-color", employee.color); // Use companyColor for bar
+                $("#employee-details").css("border-color", employee.color); 
+                $(".details-bar").css("background-color", employee.color); 
                 $(container).animate({ marginRight: '300px' }, 100);
                 $(detailsDiv).addClass("show");
             }
