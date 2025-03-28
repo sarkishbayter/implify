@@ -3,6 +3,10 @@ import mysql.connector
 from flask_cors import CORS
 
 app = Flask(__name__)  # __name__ is a built-in variable in python
+
+if __name__=='__main__':
+   app.run()
+   
 CORS(app)
 
 # db configuration
@@ -73,6 +77,6 @@ def get_employees():
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
-if __name__=='__main__':
-   app.run( debug=True, host='0.0.0.0', port=30000 )
+#if __name__=='__main__':
+#   app.run( debug=True, host='0.0.0.0', port=30000 )
 # 0.0.0.0 my flask app should be accessible from any ip address on my local network
