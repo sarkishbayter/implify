@@ -45,4 +45,4 @@ This document outlines the steps to set up and run the Implify project, includin
 
 ## Notes
 
-* Ensure that the backend server is running before you start the frontend.
+* Ensure that the backend server is running before you run the page.
