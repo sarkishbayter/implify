@@ -46,8 +46,8 @@
 }
 
 .spinner {
-    border: 4px solid #f3f3f3; /* Light grey */
-    border-top: 4px solid #3498db; /* Blue */
+    border: 4px solid #f3f3f3; 
+    border-top: 4px solid #3498db;
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -80,25 +80,29 @@
 }
 
 #employee-container {
-    margin-top: 50px;
-    padding-top: 100px;
+   padding-right: 10px;
+    margin-left: 210px; 
+    margin-bottom: 10px;
     display: flex;
+    flex: 1;
     flex-wrap: wrap;
-    gap: 20px;  /* space between row and colums */
-    justify-content: center;
+    justify-content: flex-start;
+    align-items: stretch;
+    max-height: fit-content;
+    gap: 15px; /* space between row and colums */
     
 }
 
 .employee-card {
-    display: grid;
-    grid-template-columns: minmax(120px, 1fr) 1.5fr;
+    display:flex;
     background: white;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    width: 320px;
-    min-height: 150px; /* to ensure that all card has the same height  */
-    position: relative;
+    width: 300px;
+    min-height: 200px; 
+    position:relative;
     overflow: hidden;
     align-items: stretch;
+    
 }
 
 .image-container{
@@ -120,6 +124,7 @@
 }
 
 .info h3 {
+    text-overflow: ellipsis;
     font-size: 16px;
     color: #444;
     overflow-wrap: break-word; /* break word and wrap it to next line */
@@ -146,6 +151,7 @@ header{
     left: 0;
     width: 100%;
     z-index:1000 ; /* insure that the nav bar will not be under the content */
+    border-bottom: #9e9696 solid 1px;
 }
 .rainbow{
     
@@ -179,6 +185,7 @@ header{
     padding-right: 0;
     background: white;
     
+    
 }
 
 .navbar{
@@ -188,7 +195,6 @@ header{
 .navbar-nav {
     display: flex;
     margin-left: auto;
-    
 }
 
 .navbar-nav li {
@@ -329,6 +335,7 @@ header{
 /* mobile mode */
 
 @media (max-width: 770px) {
+
     #employee-details {
         position: fixed;
         top: 0;
@@ -367,25 +374,24 @@ header{
         position: relative;
     }
 }
+
 /*mobile mode */
 
 /* end of employee deails  */
+
 /*company filter*/
-
-
 #filter-section {
-    margin-top: 135px;
-    width: 200px;
-    height: 200vh;
-    
-    padding-right: 100px;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
-    border-right: 15px solid #ddd;
+    position: fixed;
+    align-self: flex-start;
+    max-width: 200px;
+    height: 100vh;
     background-color: #f9f9f9;
     text-align: left;
+    z-index: 1000;
 }
 
 #filter-section p {
+    text-decoration: underline;
     margin-left: 20px;
     color: #3498db;
     font-size: large;
@@ -396,25 +402,23 @@ header{
 #main-section {
     display: flex ;
     flex-direction: row;
+    padding-top: 140px;
 }
 
 #checkbox-list {
     padding: 0;
-    
-    
 }
 
 #checkbox-list li {
-    width: t;
     padding-left: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     padding-right: 20px;
 }
 
 #checkbox-list label {
     display: flex;
     align-items: center;
-    font-size: 1em; /* Adjusted font size */
+    font-size: 1em; 
     color: #167091;
     cursor: pointer;
 }
@@ -423,3 +427,4 @@ header{
     margin-right: 8px; /* Space between checkbox and label */
 }
 
+/* end company filter */

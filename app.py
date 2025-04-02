@@ -7,10 +7,10 @@ CORS(app)
 
 # db configuration
 my_db = {
-    'host':'localhost',
-    'user':'root',
-    'password':'sako1234!!@@',
-    'database':'implify_db',
+    'host': 'localhost',
+    'user': 'root',
+    'password': 'sako1234!!@@',
+    'database': 'implify_db',
 }
 
 # db connection
@@ -83,39 +83,68 @@ def get_employees():
 
 @app.route('/api/companies')
 def get_companies():
-    connect=connect_db()
+    connect = connect_db()
     if connect:
-       cursor=connect.cursor(dictionary=True)
-       try:
-           query="""
-           select * from company
-           """
-           cursor.execute(query)
-           companies_data=cursor.fetchall()
-           all_companies=[]
-           for comp in companies_data :
-               company={
-                   'name': comp['companyName'],
-                   'color': comp['companyColor'],
-                   'id': comp['companyId'],
-               }
-               all_companies.append(company)
-           cursor.close()
-           close_db(connect)
-           return jsonify(all_companies)
-       except mysql.connector.error as err:
-           print(f"error fetching companies:{err}")
-           cursor.close()
-           close_db(connect)
-           return jsonify({"error": "failed to fetch companies"}),500
+        cursor = connect.cursor(dictionary=True)
+        try:
+            query = """
+                SELECT * FROM company
+            """
+            cursor.execute(query)
+            companies_data = cursor.fetchall()
+            all_companies = []
+            for comp in companies_data:
+                company = {
+                    'name': comp['companyName'],
+                    'color': comp['companyColor'],
+                    'id': comp['companyId'],
+                }
+                all_companies.append(company)
+            cursor.close()
+            close_db(connect)
+            return jsonify(all_companies)
+        except mysql.connector.Error as err:
+            print(f"error fetching companies:{err}")
+            cursor.close()
+            close_db(connect)
+            return jsonify({"error": "failed to fetch companies"}), 500
     else:
-       return jsonify({"error": "Could not connect to the database"}), 500
+        return jsonify({"error": "Could not connect to the database"}), 500
 
+@app.route('/api/filtered_companies')
+def get_filtered_companies():
+    connect = connect_db()
+    if connect:
+        cursor = connect.cursor(dictionary=True)
+        try:
+            query = "SELECT * FROM company"
+            company_ids = request.args.get('ids')
+            if company_ids:
+                company_ids_list = company_ids.split(',')
+                query += " WHERE companyId IN (%s)" % ','.join(['%s'] * len(company_ids_list))
+                cursor.execute(query, company_ids_list)
+            else:
+                cursor.execute(query)
 
-if __name__=='__main__':
-   app.run( debug=True, host='0.0.0.0', port=30000 )
+            companies_data = cursor.fetchall()
+            all_companies = []
+            for comp in companies_data:
+                company = {
+                    'name': comp['companyName'],
+                    'color': comp['companyColor'],
+                    'id': comp['companyId'],
+                }
+                all_companies.append(company)
+            cursor.close()
+            close_db(connect)
+            return jsonify(all_companies)
+        except mysql.connector.Error as err:
+            print(f"error fetching filtered companies:{err}")
+            cursor.close()
+            close_db(connect)
+            return jsonify({"error": "failed to fetch filtered companies"}), 500
+    else:
+        return jsonify({"error": "Could not connect to the database"}), 500
 
-
-
-
-# 0.0.0.0 my flask app should be accessible from any ip address on my local network
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=30000)
