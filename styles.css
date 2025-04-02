@@ -81,25 +81,28 @@
 
 #employee-container {
     margin-top: 50px;
-    margin-left: 1px;
-    margin-right: 1px;
     padding-top: 100px;
     display: flex;
     flex-wrap: wrap;
-    gap: 60px;  /* space between row and colums */
+    gap: 20px;  /* space between row and colums */
     justify-content: center;
+    
 }
 
 .employee-card {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: minmax(120px, 1fr) 1.5fr;
     background: white;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 320px;
     min-height: 150px; /* to ensure that all card has the same height  */
     position: relative;
     overflow: hidden;
     align-items: stretch;
+}
+
+.image-container{
+    min-width: 130px;
 }
 
 .image-container img {
@@ -110,7 +113,8 @@
 
 .info {
     display: flex;
-    flex-direction: column;
+    min-width: 100%;
+    flex-direction:column;
     justify-content: center;
     padding: 15px;
 }
@@ -118,6 +122,7 @@
 .info h3 {
     font-size: 16px;
     color: #444;
+    overflow-wrap: break-word; /* break word and wrap it to next line */
 }
 
 .info p {
@@ -127,7 +132,7 @@
 
 .color-bar {
     width: 100%;
-    height: 10px;
+    height: 20px;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -233,7 +238,7 @@ header{
 
 
 #employee-details .details-bar {
-    width: 10px;
+    width: 20px;
     height: 100%;
     position: absolute;
     right: 0;
@@ -283,6 +288,10 @@ header{
     color: #444;
     font-weight: 200;
     
+}
+
+#employee-details h3 {
+    overflow-wrap: break-word;
 }
 
 #employee-details p {
@@ -361,3 +370,56 @@ header{
 /*mobile mode */
 
 /* end of employee deails  */
+/*company filter*/
+
+
+#filter-section {
+    margin-top: 135px;
+    width: 200px;
+    height: 200vh;
+    
+    padding-right: 100px;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+    border-right: 15px solid #ddd;
+    background-color: #f9f9f9;
+    text-align: left;
+}
+
+#filter-section p {
+    margin-left: 20px;
+    color: #3498db;
+    font-size: large;
+    font-weight: bolder;
+    margin-bottom: 20px;
+}
+
+#main-section {
+    display: flex ;
+    flex-direction: row;
+}
+
+#checkbox-list {
+    padding: 0;
+    
+    
+}
+
+#checkbox-list li {
+    width: t;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    padding-right: 20px;
+}
+
+#checkbox-list label {
+    display: flex;
+    align-items: center;
+    font-size: 1em; /* Adjusted font size */
+    color: #167091;
+    cursor: pointer;
+}
+
+#checkbox-list input[type="checkbox"] {
+    margin-right: 8px; /* Space between checkbox and label */
+}
+

@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>implify </title>
+    <title>implify</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"> // using jquery to load between 2 pages </script> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="main.js"></script>
 </head>
+
 <body id="body_index">
+
     <div class="container">
         <div class="logo">
-         implify     
-         
+            implify
         </div>
         <div class="desc1">
             Making Information Simple, Tangible and Beautiful.
@@ -21,12 +25,68 @@
             Loading... please wait
         </div>
     </div>
-    <script>
-        $(document).ready(function(){
-        setTimeout(function(){
-            window.location.href = "main.html";
-        }, 1500);});  
-        // wait 1.5 seconds than redirect to the main page 
-        </script>
+
+    <header id="main-header" style="display: none;">
+        <div class="top-bar"></div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="rainbow">implify</div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Our Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Our Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <div id="main-section">
+        <div id="filter-section" style="display: none;">
+            <p>company</p>
+            <ul id="checkbox-list"></ul>
+        </div>
+
+        <div id="employee-container" style="display: none;">
+        </div>
+
+    </div>
+
+    <div id="employee-details" style="display: none;">
+        <div class="details-bar"></div>
+        <div class="details-content">
+            <button id="close-details">X</button>
+            <div class="details-image">
+                <img id="details-photo" src="" alt="Employee Photo">
+            </div>
+            <h3 id="details-name"></h3>
+            <p id="details-company"></p>
+            <p class="address">Address:</p>
+            <p id="details-address"></p>
+            <p id="details-city"></p>
+            <p id="details-country"></p>
+            <div class="details-actions">
+                <button class="details-action">Share</button>
+                <button class="details-action">Send</button>
+                <button class="details-action">Call</button>
+                <button class="details-action delete-action">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

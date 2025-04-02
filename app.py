@@ -1,8 +1,8 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import mysql.connector
 from flask_cors import CORS
 
-app = Flask(__name__)  # __name__ is a built-in variable in python
+app = Flask(__name__)
 CORS(app)
 
 # db configuration
@@ -31,10 +31,10 @@ def close_db(connect):
 def get_employees():
     connect = connect_db()
     if connect:
-        cursor = connect.cursor(dictionary=True) # allow to executesql queries and fetch result from db
+        cursor = connect.cursor(dictionary=True)
         try:
             query = """
-                select
+                SELECT
                     e.fname,
                     e.lname,
                     c.companyName,
@@ -43,10 +43,17 @@ def get_employees():
                     e.city,
                     e.country,
                     e.photo
-                from employees e
-                left join company c on e.companyId = c.companyId
+                FROM employees e
+                LEFT JOIN company c ON e.companyId = c.companyId
             """
-            cursor.execute(query)
+            companies = request.args.get('companies')
+            if companies:
+                companies_list = companies.split(',')
+                query += " WHERE c.companyName IN (%s)" % ','.join(['%s'] * len(companies_list))
+                cursor.execute(query, companies_list)
+            else:
+                cursor.execute(query)
+
             employees_data = cursor.fetchall()
 
             all_employees = []
@@ -62,6 +69,7 @@ def get_employees():
                     'photo': emp['photo'],
                 }
                 all_employees.append(employee)
+
             cursor.close()
             close_db(connect)
             return jsonify(all_employees)
@@ -73,6 +81,41 @@ def get_employees():
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
+@app.route('/api/companies')
+def get_companies():
+    connect=connect_db()
+    if connect:
+       cursor=connect.cursor(dictionary=True)
+       try:
+           query="""
+           select * from company
+           """
+           cursor.execute(query)
+           companies_data=cursor.fetchall()
+           all_companies=[]
+           for comp in companies_data :
+               company={
+                   'name': comp['companyName'],
+                   'color': comp['companyColor'],
+                   'id': comp['companyId'],
+               }
+               all_companies.append(company)
+           cursor.close()
+           close_db(connect)
+           return jsonify(all_companies)
+       except mysql.connector.error as err:
+           print(f"error fetching companies:{err}")
+           cursor.close()
+           close_db(connect)
+           return jsonify({"error": "failed to fetch companies"}),500
+    else:
+       return jsonify({"error": "Could not connect to the database"}), 500
+
+
 if __name__=='__main__':
    app.run( debug=True, host='0.0.0.0', port=30000 )
+
+
+
+
 # 0.0.0.0 my flask app should be accessible from any ip address on my local network
