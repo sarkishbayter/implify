@@ -35,6 +35,7 @@ def get_employees():
         try:
             query = """
                 SELECT
+                    e.Id,
                     e.fname,
                     e.lname,
                     c.companyName,
@@ -67,6 +68,7 @@ def get_employees():
                     'city': emp['city'],
                     'color': emp['companyColor'],
                     'photo': emp['photo'],
+                    'employeeId': emp['Id'],
                 }
                 all_employees.append(employee)
 
@@ -143,6 +145,26 @@ def get_filtered_companies():
             cursor.close()
             close_db(connect)
             return jsonify({"error": "failed to fetch filtered companies"}), 500
+    else:
+        return jsonify({"error": "Could not connect to the database"}), 500
+
+@app.route('/api/employees/<int:employee_id>', methods=['DELETE'])
+def delete_employee(employee_id):
+    connect = connect_db()
+    if connect:
+        cursor = connect.cursor()
+        try:
+            query = "DELETE FROM employees WHERE Id = %s"
+            cursor.execute(query, (employee_id,))
+            connect.commit()
+            cursor.close()
+            close_db(connect)
+            return jsonify({"message": "Employee deleted successfully"}), 200
+        except mysql.connector.Error as err:
+            print(f"Error deleting employee: {err}")
+            cursor.close()
+            close_db(connect)
+            return jsonify({"error": "Failed to delete employee"}), 500
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 

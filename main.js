@@ -27,7 +27,10 @@ $(document).ready(function() {
                 })
                 .then(allemploye => {
                     container.innerHTML = '';
-        
+                    if(allemploye.length==0){
+                        container.innerHTML="No Employees Found !!! ";
+                    }
+                    else{
                     allemploye.forEach((emp, index) => {
                         const card = document.createElement("div");
                         card.classList.add("employee-card");
@@ -67,7 +70,7 @@ $(document).ready(function() {
                             $(this).addClass("selected");
         
                             const employee = allemploye[index];
-        
+                            $("#employee-details").data("employeeId",employee.employeeId);
                             $("#details-photo").attr("src", employee.photo);
                             $("#details-name").text(`${employee.fname} ${employee.lname}`).css("color", employee.color);
                             $("#details-company").text(employee.company);
@@ -82,19 +85,52 @@ $(document).ready(function() {
                     });
         
                     const closeDetailsButton = document.getElementById("close-details");
-        
+                    //close button
                     $(closeDetailsButton).on("click", function() {
                         $(container).animate({ marginRight: '1px' }, 100);
                         $(detailsDiv).removeClass("show");
                         $(".employee-card.selected").removeClass("selected");
                     });
+                }
         
                 })
                 .catch(error => {
                     console.error('Error fetching employee data:', error);
                     container.innerHTML = '<p>Failed to load employee data.</p>';
                 });
+
+                //delete button
+                //.off("click"):remove existing listeners
+                $(".delete-action").off("click").on("click",function(){
+                    const employeeId=$("#employee-details").data("employeeId");
+                    if (employeeId) {
+                        if (confirm("Are you sure you want to delete this employee?")) {
+                            deleteEmployee(employeeId);
+                        }
+                    } else {
+                        console.error("Employee ID not found.");
+                    }
+                });
         }
+        // function to delete employees based on id 
+        function deleteEmployee(employeeId) {
+            fetch(`http://127.0.0.1:30000/api/employees/${employeeId}`, { method: 'DELETE', })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Employee deleted successfully.");
+                    $(".employee-card.selected").remove();
+                    $("#close-details").click();
+                    //refresh the employee list
+                    fetchAndDisplayEmployees($(".company-checkbox:checked").map(function() {return $(this).val();}).get());
+                } else {
+                    console.error("Failed to delete employee.");
+                }
+            })
+            .catch(error => {
+                console.error("Error deleting employee:", error);
+            });
+        }
+
 
         fetch('http://127.0.0.1:30000/api/companies')
             .then(response => {
@@ -119,6 +155,7 @@ $(document).ready(function() {
                     listItem.appendChild(label);
                     checkbox_list.appendChild(listItem);
                 });
+
                 //check any checkbox changes 
                 $("#checkbox-list").off("change", ".company-checkbox").on("change", ".company-checkbox", function() {
                     const selectedCompanyNames = $(".company-checkbox:checked").map(function() {
