@@ -398,6 +398,12 @@ header{
     font-weight: bolder;
     margin-bottom: 20px;
 }
+#filter-section button{
+    border: #aa9c9b solid;
+    padding-left: 20px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    }
 
 #main-section {
     display: flex ;
@@ -428,3 +434,37 @@ header{
 }
 
 /* end company filter */
+/* add employee section */
+
+#add-section { 
+    margin: 140px auto;
+    padding: 20px;
+    height: fit-content;
+    width: 500px;
+    border: 5px solid transparent;
+    border-image: linear-gradient(to right, yellow, green, blue, indigo, violet, red);
+    border-image-slice: 1;
+}
+#add-section form {
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 1px; 
+}
+#add-section .back-to-main{
+margin-top: 15px;
+width: 100%;
+}
+
+#add-section form label,
+#add-section form input {
+    width: 100%; 
+}
+
+
+#add-section p {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+/* end add section */

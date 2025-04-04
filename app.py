@@ -147,7 +147,8 @@ def get_filtered_companies():
             return jsonify({"error": "failed to fetch filtered companies"}), 500
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
-
+    
+#delete employee based on id 
 @app.route('/api/employees/<int:employee_id>', methods=['DELETE'])
 def delete_employee(employee_id):
     connect = connect_db()
@@ -167,6 +168,42 @@ def delete_employee(employee_id):
             return jsonify({"error": "Failed to delete employee"}), 500
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
+    
+
+# add employee 
+@app.route('/api/employees',methods=['POST'])  
+def add_employee():
+    connect = connect_db()
+    if connect:
+        cursor = connect.cursor()
+        try:
+            data = request.get_json() # lot of data --> prefered json form 
+            fname = data.get('fname')
+            lname = data.get('lname')
+            employee_id = data.get('id')
+            company_id = data.get('companyId')
+            address = data.get('address')
+            city = data.get('city')
+            country = data.get('country')
+            photo = data.get('photo')
+
+            query = """
+                INSERT INTO employees (Id, fname, lname, companyId, address, city, country, photo)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(query, (employee_id, fname, lname, company_id, address, city, country, photo))
+            connect.commit()
+            cursor.close()
+            close_db(connect)
+            return jsonify({"message": "Employee added successfully"}), 201
+        except mysql.connector.Error as err:
+            print(f"Error adding employee: {err}")
+            cursor.close()
+            close_db(connect)
+            return jsonify({"error": "Failed to add employee"}), 500
+    else:
+        return jsonify({"error": "Could not connect to the database"}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=30000)
