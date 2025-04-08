@@ -215,6 +215,24 @@ header{
     margin-right: 2px;
 }
 
+#navbarNav .add-action{
+
+    border-style: hidden;
+    border: none;
+    margin-left: 350px; 
+    margin-right: 50px;
+    color:rgb(60, 63, 72);
+    font-size: 16px;
+    font-weight: bold;
+}
+#navbarNav  .edit-action{
+    border-style: hidden;
+    color:rgb(60, 63, 72);
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
 /* end of navigation bar */
 
 
@@ -398,12 +416,7 @@ header{
     font-weight: bolder;
     margin-bottom: 20px;
 }
-#filter-section button{
-    border: #aa9c9b solid;
-    padding-left: 20px;
-    margin-left: 20px;
-    margin-bottom: 20px;
-    }
+
 
 #main-section {
     display: flex ;
@@ -448,13 +461,15 @@ header{
 #add-section form {
     display: grid;
     grid-template-columns: 1fr; 
-    gap: 1px; 
+    gap: 2px; 
 }
 #add-section .back-to-main{
-margin-top: 15px;
+margin-top: 5px;
 width: 100%;
 }
-
+#add-section #submit{
+    margin-top: 10px;
+}
 #add-section form label,
 #add-section form input {
     width: 100%; 

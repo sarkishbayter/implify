@@ -1,5 +1,10 @@
 $(document).ready(function() {
+    let allCompanies = [];
+    let allEmployees = [];
+    let selectedEmployee = null;
+
     $("#add-section").hide();
+
     // Function to delete employees based on id
     function deleteEmployee(employeeId) {
         fetch(`http://127.0.0.1:30000/api/employees/${employeeId}`, { method: 'DELETE' })
@@ -32,13 +37,15 @@ $(document).ready(function() {
                 }
                 return response.json();
             })
-            .then(allemploye => {
+            .then(employees => {
+                allEmployees = employees; // Store employees globally
                 const container = document.getElementById("employee-container");
                 container.innerHTML = '';
-                if (allemploye.length === 0) {
+                if (employees.length === 0) {
                     container.innerHTML = "No Employees Found !!! ";
                 } else {
-                    allemploye.forEach((emp, index) => {
+                    employees.forEach((emp, index) => {
+        
                         const card = document.createElement("div");
                         card.classList.add("employee-card");
                         card.dataset.index = index;
@@ -75,8 +82,7 @@ $(document).ready(function() {
                         $(card).on("click", function() {
                             $(".employee-card.selected").removeClass("selected");
                             $(this).addClass("selected");
-
-                            const employee = allemploye[index];
+                            const employee = employees[index];
                             $("#employee-details").data("employeeId", employee.employeeId);
                             $("#details-photo").attr("src", employee.photo);
                             $("#details-name").text(`${employee.fname} ${employee.lname}`).css("color", employee.color);
@@ -88,6 +94,20 @@ $(document).ready(function() {
                             $(".details-bar").css("background-color", employee.color);
                             $(container).animate({ marginRight: '300px' }, 100);
                             $("#employee-details").addClass("show");
+                            selectedEmployee = allEmployees[index];
+                            // Edit an employee
+                            $(".edit-action").off("click").on("click", function() {
+                                if(selectedEmployee){
+                                    $("#main-section").hide();
+                                    $("#employee-details").hide();
+                                    $("#add-section p").text("Edit Employee");
+                                    $("#add-section").show();
+                                    editEmployee(selectedEmployee);
+                                    $(".add-action").prop("disabled", true);
+                                } else {
+                                    alert("Please select an employee to edit.")
+                                }
+                            });
                         });
                     });
 
@@ -105,52 +125,86 @@ $(document).ready(function() {
             });
     }
 
-    function addEmployee() {
-        $("#main-section").hide();
-        $("#add-section").show();
-
+    // Function to add employee
+    function addEmployee(employeeId) {
         $('#add-section form').off('submit').on('submit', function(event) {
             event.preventDefault();
-
             const formData = {
                 fname: $('#fname').val(),
                 lname: $('#lname').val(),
                 id: $('#id').val(),
-                companyId: $('#companyId').val(),
+                companyId: $('#companie-dropdown').val(),
                 address: $('#address').val(),
                 city: $('#city').val(),
                 country: $('#country').val(),
                 photo: $('#photo').val(),
             };
-
-            fetch('http://127.0.0.1:30000/api/employees', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
+            if (formData.fname == "") {
+                alert("First name can not be empty !!");
+            } else {
+                let url = 'http://127.0.0.1:30000/api/employees';
+                let method = 'POST';
+                if (employeeId) {
+                    url += `/${employeeId}`;
+                    method = 'PUT';
+                }
+                fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData),
+                })
                 .then(response => {
                     if (response.ok) {
                         return response.json();
                     } else {
-                        throw new Error('Failed to add employee.');
+                        throw new Error(`Failed to ${employeeId ? 'update' : 'add'} employee.`);
                     }
                 })
                 .then(data => {
-                    console.log('Employee added:', data.message);
-                    $('#add-section form')[0].reset(); //Clear the form fields
-                    alert('Employee added successfully!');
+                    console.log(`Employee ${employeeId ? 'updated' : 'added'}:`, data.message);
+                    $('#add-section form')[0].reset();
+                    alert(`Employee ${employeeId ? 'updated' : 'added'} successfully!`);
                     fetchAndDisplayEmployees($(".company-checkbox:checked").map(function() { return $(this).val(); }).get());
-                    
+                    $("#main-section").show();
+                    $("#employee-details").show();
+                    $(".add-action").prop("disabled", false);
+                    $("#add-section").hide();
+                    selectedEmployee = null;
                 })
                 .catch(error => {
-                    console.error('Error adding employee:', error);
-                    alert('Failed to add employee.');
+                    console.error(`Error ${employeeId ? 'updating' : 'adding'} employee:`, error);
+                    alert(`Failed to ${employeeId ? 'update' : 'add'} employee.`);
                 });
+            }
         });
     }
-    
+
+    function editEmployee(employee) {
+        $('#fname').val(employee.fname);
+        $('#lname').val(employee.lname);
+        $('#id').val(employee.employeeId).prop('readonly', true);
+        $('#companie-dropdown').val(employee.companyId);
+        $('#address').val(employee.address);
+        $('#city').val(employee.city);
+        $('#country').val(employee.country);
+        $('#photo').val(employee.photo);
+
+        const dropDown = document.getElementById('companie-dropdown');
+        dropDown.innerHTML = "";
+
+        allCompanies.forEach(comp => {
+            const option = document.createElement('option');
+            option.value = comp.id;
+            option.text = comp.name;
+            if (comp.name === employee.company) {
+                option.selected = true;
+            }
+            dropDown.appendChild(option);
+        });
+        addEmployee(employee.employeeId);
+         $("#close-details").click();
+        
+    }
 
     setTimeout(function() {
         $(".container").hide();
@@ -159,7 +213,6 @@ $(document).ready(function() {
         document.body.classList.add('body_main');
 
         const checkbox_list = document.getElementById("checkbox-list");
-        let allcompanies = [];
 
         // Fetch company data
         fetch('http://127.0.0.1:30000/api/companies')
@@ -170,8 +223,8 @@ $(document).ready(function() {
                 return response.json();
             })
             .then(data => {
-                allcompanies = data;
-                allcompanies.forEach(comp => {
+                allCompanies = data; // Store companies globally
+                allCompanies.forEach(comp => {
                     const listItem = document.createElement('li');
                     const checkbox = document.createElement('input');
                     const label = document.createElement('label');
@@ -191,7 +244,7 @@ $(document).ready(function() {
                 document.getElementById("employee-container").innerHTML = '<p>Failed to load company data.</p>';
             });
 
-        // Add event listener for delete button
+        // ... Event listeners ...
         $(".delete-action").off("click").on("click", function() {
             const employeeId = $("#employee-details").data("employeeId");
             if (employeeId) {
@@ -203,24 +256,38 @@ $(document).ready(function() {
             }
         });
 
-        // Add event listener for checkbox changes
         $("#checkbox-list").off("change", ".company-checkbox").on("change", ".company-checkbox", function() {
             const selectedCompanyNames = $(".company-checkbox:checked").map(function() {
                 return $(this).val();
             }).get();
             fetchAndDisplayEmployees(selectedCompanyNames);
         });
-        // event listener to add button 
+
         $(".add-action").off("click").on("click", function() {
+            $("#main-section").hide();
+            $("#employee-details").hide();
+            $("#add-section p").text("Add Employee");
+            $("#add-section").show();
+            const dropDown = document.getElementById('companie-dropdown');
+            dropDown.innerHTML = "";
+            allCompanies.forEach(comp => {
+                const option = document.createElement('option');
+                option.value = comp.id;
+                option.text = comp.name;
+                dropDown.appendChild(option);
+            });
             addEmployee();
         });
+
         $(".back-to-main").off("click").on("click", function() {
             fetchAndDisplayEmployees($(".company-checkbox:checked").map(function() { return $(this).val(); }).get());
             $("#main-section").show();
+            $("#employee-details").show();
             $("#add-section").hide();
-            $('#add-section form')[0].reset(); //clear form
+            $('#add-section form')[0].reset();
+            selectedEmployee = null;
         });
-        
+
         fetchAndDisplayEmployees([]);
     }, 1500);
 });

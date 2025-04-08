@@ -204,6 +204,39 @@ def add_employee():
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
+@app.route('/api/employees/<int:employee_id>', methods=['PUT'])
+def edit_employee(employee_id):
+    connect = connect_db()
+    if connect:
+        cursor = connect.cursor()
+        try:
+            data = request.get_json()
+            fname = data.get('fname')
+            lname = data.get('lname')
+            company_id = data.get('companyId')
+            address = data.get('address')
+            city = data.get('city')
+            country = data.get('country')
+            photo = data.get('photo')
+
+            query = """
+                UPDATE employees
+                SET fname = %s, lname = %s, companyId = %s, address = %s, city = %s, country = %s, photo = %s
+                WHERE Id = %s
+            """
+            cursor.execute(query, (fname, lname, company_id, address, city, country, photo, employee_id))
+            connect.commit()
+            cursor.close()
+            close_db(connect)
+            return jsonify({"message": "Employee updated successfully"}), 200
+        except mysql.connector.Error as err:
+            print(f"Error updating employee: {err}")
+            cursor.close()
+            close_db(connect)
+            return jsonify({"error": "Failed to update employee"}), 500
+    else:
+        return jsonify({"error": "Could not connect to the database"}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=30000)

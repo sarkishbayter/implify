@@ -35,6 +35,8 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
+                <button class="add-action" name="add" value="add">Add employee</button>
+                <button class="edit-action" name="edit" value="edit" >Edit Employee</button>
                 <ul class="navbar-nav">
                     <li class="nav-item active">
                         <a class="nav-link" href="#">About Us</a>
@@ -57,9 +59,6 @@
         <div id="filter-section" style="display: none;">
             <p>company</p>
             <ul id="checkbox-list"></ul>
-            <p id="filter-actions">Actions</p>
-            <button class="add-action" name="add" value="add">Add employee</button>
-            <button class="edit-action" name="edit" value="edit">Edit employee</button>
         </div>
 
         <div id="employee-container" style="display: none;">
@@ -91,23 +90,23 @@
        <p>Add Employee </p>
         <form action="">
             <label for="fname">First Name :</label>
-            <input type="text" id="fname" name="fname"> <br><br>
+            <input type="text" id="fname" name="fname"> 
             <label for="lname">Last Name :</label>
-            <input type="text" id="lname" name="lname" ><br><br>
+            <input type="text" id="lname" name="lname" >
             <label for="id">Employee Id :</label>
-            <input type="text" id="id" name="id"> <br><br>
-            <label for="companyId">Company Id :</label>
-            <input type="text" id="companyId" name="companyId"> <br><br>
+            <input type="text" id="id" name="id"> 
+            <label for="companyId">Company Name :</label>
+            <select name="companie-dropdown" id="companie-dropdown"></select>
             <label for="address">Address :</label>
-            <input type="text" id="address" name="address"> <br><br>
+            <input type="text" id="address" name="address"> 
             <label for="city">City:</label>
-            <input type="text" id="city" name="city"> <br><br>
+            <input type="text" id="city" name="city"> 
             <label for="country">Country :</label>
-            <input type="text" id="country" name="country"> <br><br>
+            <input type="text" id="country" name="country"> 
             <label for="photo">Photo :</label>
-            <input type="text" id="photo" name="photo"> <br><br>
+            <input type="text" id="photo" name="photo">
             <input type="submit" name="submit" id="submit" value="submit">
-        </form>
+        </form> <br>
         <button class="back-to-main" name="back" value="back">Back</button>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
