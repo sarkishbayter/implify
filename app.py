@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+import bcrypt 
 import mysql.connector
 from flask_cors import CORS
 
@@ -26,6 +27,11 @@ def connect_db():
 def close_db(connect):
     if connect and connect.is_connected():
         connect.close()
+
+# hash password
+def hash_password(password):
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_password.decode('utf-8')
 
 @app.route('/api/employees')
 def get_employees():
@@ -236,6 +242,44 @@ def edit_employee(employee_id):
             return jsonify({"error": "Failed to update employee"}), 500
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
+
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'success': False, 'message': 'Username and password are required'}), 400
+
+    connection = connect_db()
+    if connection:
+        cursor = connection.cursor(dictionary=True)
+        try:
+            query = "SELECT * FROM users WHERE username = %s"
+            cursor.execute(query, (username,))
+            user = cursor.fetchone()
+
+            if user:
+                password_from_db = user['password'].encode('utf-8')
+                password_from_form = password.encode('utf-8')
+
+                if bcrypt.checkpw(password_from_form, password_from_db):
+                    return jsonify({'success': True, 'message': 'Login successful'}), 200
+                else:
+                    return jsonify({'success': False, 'message': 'Invalid username or password'}), 401
+            else:
+                return jsonify({'success': False, 'message': 'Invalid username or password'}), 401
+
+        except mysql.connector.Error as err:
+            print(f"Error executing query: {err}")
+            return jsonify({'success': False, 'message': 'Database error'}), 500
+        finally:
+            cursor.close()
+            close_db(connection)
+    else:
+        return jsonify({'success': False, 'message': 'Database connection failed'}), 500
 
 
 if __name__ == '__main__':

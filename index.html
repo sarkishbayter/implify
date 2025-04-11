@@ -12,7 +12,17 @@
 </head>
 
 <body id="body_index">
-
+    <div id="login-page">
+         <p>Login</p>
+        <form id="login-form">
+            <label for="username" style="display: none;">username</label>
+            <input type="text" id="username" name="username" placeholder="User name" autocomplete="current-password">
+            <label for="password" style="display: none;">password</label>
+            <input type="password" id="password" name="password" placeholder="Password" autocomplete="current-password">
+            <button id="login-button" type="submit" name="login" value="login">Login</button>
+            <div id="login-message" style="color: red; margin-top: 10px; display: none;"  ></div>
+        </form>
+    </div>
     <div class="container">
         <div class="logo">
             implify
@@ -34,10 +44,11 @@
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <button class="add-action" name="add" value="add">Add employee</button>
-                <button class="edit-action" name="edit" value="edit" >Edit Employee</button>
+            <div class="collapse navbar-collapse" id="navbarNav">          
                 <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><button class="add-action" name="add" value="add">Add Employee</button></a>   
+                    </li>
                     <li class="nav-item active">
                         <a class="nav-link" href="#">About Us</a>
                     </li>
@@ -82,6 +93,7 @@
                 <button class="details-action">Share</button>
                 <button class="details-action">Send</button>
                 <button class="details-action">Call</button>
+                <button class="details-action edit-action" name="edit" value="edit" >Edit</button>
                 <button class="details-action delete-action">Delete</button>
             </div>
         </div>

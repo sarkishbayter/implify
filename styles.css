@@ -7,11 +7,15 @@
     height: 100vh;
     margin: 0;
     font-family: sans-serif;
-    background-color: #f5f5f5;
+    background-image:url('images/background.jpg')  ;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
 }
 
 .container {
     text-align: center;
+   
 }
 
 
@@ -150,7 +154,7 @@ header{
     top: 0;
     left: 0;
     width: 100%;
-    z-index:1000 ; /* insure that the nav bar will not be under the content */
+    z-index:1001 ; /* insure that the nav bar will not be under the content */
     border-bottom: #9e9696 solid 1px;
 }
 .rainbow{
@@ -202,10 +206,20 @@ header{
     padding-left: 15px;
 }
 
-.navbar-nav a {
+.navbar-nav a , .add-action{
     color:rgb(82, 123, 211);
     font-size: 16px;
     font-weight: bold;
+}
+
+.navbar-nav .add-action{
+    
+    border-style: none;
+    background-color:transparent;
+    
+}
+.navbar-nav .add-action:hover{
+    color: #333;
 }
 
 .navbar-nav a:hover {
@@ -215,22 +229,6 @@ header{
     margin-right: 2px;
 }
 
-#navbarNav .add-action{
-
-    border-style: hidden;
-    border: none;
-    margin-left: 350px; 
-    margin-right: 50px;
-    color:rgb(60, 63, 72);
-    font-size: 16px;
-    font-weight: bold;
-}
-#navbarNav  .edit-action{
-    border-style: hidden;
-    color:rgb(60, 63, 72);
-    font-size: 16px;
-    font-weight: bold;
-}
 
 
 /* end of navigation bar */
@@ -331,7 +329,7 @@ header{
     display: flex;
     flex-direction: column;
     justify-content:center;
-    padding-right: 2px;
+    padding-right: 10px;
 }
 
 #employee-details .details-action {
@@ -450,6 +448,7 @@ header{
 /* add employee section */
 
 #add-section { 
+    display: none;
     margin: 140px auto;
     padding: 20px;
     height: fit-content;
@@ -483,3 +482,50 @@ width: 100%;
     margin-bottom: 10px;
 }
 /* end add section */
+/* login page */
+#login-page {
+    display: none;
+    margin: 140px auto;
+    padding: 25px;
+    height: 350px;
+    width: 350px;
+    border: 5px solid transparent;
+    border-image: linear-gradient(to right, yellow, green, blue, indigo, violet, red);
+    border-image-slice: 1;
+    
+
+}
+#login-page p{
+    margin-top: 2px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em ;
+}
+#login-page #username,#password {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: none;
+    background-color: #ccc;
+    border-radius: 1cap;
+    
+    
+}
+#login-page input::placeholder{
+    color: #3a3333;
+}
+#login-page #login-button{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 50px;
+    margin-right: 50px;
+    border-radius: 1cap;
+}
+#login-page #login-message{
+    width: fit-content;
+}
+#login-form{
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 5px;
+}
+/* end login page */
