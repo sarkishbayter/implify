@@ -529,3 +529,25 @@ width: 100%;
     gap: 5px;
 }
 /* end login page */
+/* pagination */
+ #pagination button {
+    border-radius: 1cap;
+    font-weight: bolder;
+    margin: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+#pagination button.active {
+    background-color: #4476ac;
+    color: rgb(143, 180, 249);
+}
+#employee-display-area {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+}
+#pagination {
+    margin-top: 30px; 
+}
+/*end pagination */
