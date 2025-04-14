@@ -33,12 +33,19 @@ def hash_password(password):
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     return hashed_password.decode('utf-8')
 
-@app.route('/api/employees')
+# get employees based on companies and page 
+@app.route('/api/employees/list', methods=['POST'])
 def get_employees():
     connect = connect_db()
     if connect:
         cursor = connect.cursor(dictionary=True)
         try:
+            data = request.get_json()
+            page = data.get('page', 1)
+            limit = data.get('limit', 7)
+            companies = data.get('companies')
+            offset = (page - 1) * limit
+
             query = """
                 SELECT
                     e.Id,
@@ -53,17 +60,16 @@ def get_employees():
                 FROM employees e
                 LEFT JOIN company c ON e.companyId = c.companyId
             """
-            companies = request.args.get('companies')
-            if companies:
-                companies_list = companies.split(',')
-                query += " WHERE c.companyName IN (%s)" % ','.join(['%s'] * len(companies_list))
-                cursor.execute(query, companies_list)
-            else:
-                cursor.execute(query)
+            params = []
+            if companies and len(companies) > 0:
+                query += " WHERE c.companyName IN (" + ",".join(["%s"] * len(companies)) + ")"
+                params.extend(companies)
+            query += " LIMIT %s OFFSET %s"
+            params.extend([limit, offset])
 
+            cursor.execute(query, params)
             employees_data = cursor.fetchall()
-
-            all_employees = []
+            employee_list = []
             for emp in employees_data:
                 employee = {
                     'fname': emp['fname'],
@@ -76,11 +82,27 @@ def get_employees():
                     'photo': emp['photo'],
                     'employeeId': emp['Id'],
                 }
-                all_employees.append(employee)
+                employee_list.append(employee)
+
+            # Count total employees
+            count_query = """
+                SELECT COUNT(*) as total FROM employees e
+                LEFT JOIN company c ON e.companyId = c.companyId
+            """
+            count_params = []
+            if companies and len(companies) > 0:
+                count_query += " WHERE c.companyName IN (" + ",".join(["%s"] * len(companies)) + ")"
+                count_params.extend(companies)
+                cursor.execute(count_query, count_params) 
+            else:
+                cursor.execute(count_query)
+
+            total_employees = cursor.fetchone()['total']
 
             cursor.close()
             close_db(connect)
-            return jsonify(all_employees)
+            return jsonify({'employees': employee_list, 'total': total_employees})
+
         except mysql.connector.Error as err:
             print(f"error fetching employees: {err}")
             cursor.close()
@@ -89,6 +111,7 @@ def get_employees():
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
+#get companies 
 @app.route('/api/companies')
 def get_companies():
     connect = connect_db()
@@ -119,40 +142,6 @@ def get_companies():
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
-@app.route('/api/filtered_companies')
-def get_filtered_companies():
-    connect = connect_db()
-    if connect:
-        cursor = connect.cursor(dictionary=True)
-        try:
-            query = "SELECT * FROM company"
-            company_ids = request.args.get('ids')
-            if company_ids:
-                company_ids_list = company_ids.split(',')
-                query += " WHERE companyId IN (%s)" % ','.join(['%s'] * len(company_ids_list))
-                cursor.execute(query, company_ids_list)
-            else:
-                cursor.execute(query)
-
-            companies_data = cursor.fetchall()
-            all_companies = []
-            for comp in companies_data:
-                company = {
-                    'name': comp['companyName'],
-                    'color': comp['companyColor'],
-                    'id': comp['companyId'],
-                }
-                all_companies.append(company)
-            cursor.close()
-            close_db(connect)
-            return jsonify(all_companies)
-        except mysql.connector.Error as err:
-            print(f"error fetching filtered companies:{err}")
-            cursor.close()
-            close_db(connect)
-            return jsonify({"error": "failed to fetch filtered companies"}), 500
-    else:
-        return jsonify({"error": "Could not connect to the database"}), 500
     
 #delete employee based on id 
 @app.route('/api/employees/<int:employee_id>', methods=['DELETE'])
@@ -177,7 +166,7 @@ def delete_employee(employee_id):
     
 
 # add employee 
-@app.route('/api/employees',methods=['POST'])  
+@app.route('/api/employees/add',methods=['POST'])  
 def add_employee():
     connect = connect_db()
     if connect:
@@ -210,6 +199,7 @@ def add_employee():
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
+#edit employees based on id 
 @app.route('/api/employees/<int:employee_id>', methods=['PUT'])
 def edit_employee(employee_id):
     connect = connect_db()
@@ -243,7 +233,7 @@ def edit_employee(employee_id):
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
-
+# users login
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
