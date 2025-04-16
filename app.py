@@ -142,6 +142,7 @@ def get_companies():
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
+
     
 #delete employee based on id 
 @app.route('/api/employees/<int:employee_id>', methods=['DELETE'])
@@ -199,6 +200,108 @@ def add_employee():
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
+# add companie
+@app.route('/api/companies/add', methods=['POST'])
+def add_company():
+    connect = connect_db()
+    if connect:
+        cursor = connect.cursor()
+        try:
+            data = request.get_json()
+            name = data.get('name')
+            company_id = data.get('id')  # Use a more specific variable name
+            color = data.get('color')
+
+            #  Add the new company 
+            insert_company_query = """
+                INSERT INTO company (companyName, companyId, companyColor)
+                VALUES (%s, %s, %s)
+            """
+            cursor.execute(insert_company_query, (name, company_id, color))
+            connect.commit()
+
+            # Delete the used ID from available_ids 
+            delete_id_query = "DELETE FROM available_ids WHERE id = %s"
+            cursor.execute(delete_id_query, (company_id,))
+            connect.commit()
+
+            #  Delete the used color from colors 
+            delete_color_query = "DELETE FROM colors WHERE hex_code = %s"
+            cursor.execute(delete_color_query, (color,))
+            connect.commit()
+
+            cursor.close()
+            close_db(connect)
+            return jsonify({"message": "company added successfully"}), 201
+        except mysql.connector.Error as err:
+            print(f"Error adding company and deleting related data: {err}")
+            connect.rollback()  # Rollback changes in case of error
+            cursor.close()
+            close_db(connect)
+            return jsonify({"error": f"Failed to add company and related data: {err}"}), 500
+    else:
+        return jsonify({"error": "Could not connect to the database"}), 500
+
+
+# get all colors 
+@app.route('/api/colors')
+def get_colors():
+    connect = connect_db()
+    if connect:
+        cursor = connect.cursor(dictionary=True)
+        try:
+            query = """
+                SELECT * FROM colors
+            """
+            cursor.execute(query)
+            data = cursor.fetchall()
+            all_colors = []
+            for c in data:
+                color = {
+                    'name': c['name'],
+                    'color': c['hex_code']
+                }
+                all_colors.append(color)
+            cursor.close()
+            close_db(connect)
+            return jsonify(all_colors)
+        except mysql.connector.Error as err:
+            print(f"error fetching colors:{err}")
+            cursor.close()
+            close_db(connect)
+            return jsonify({"error": "failed to fetch colors"}), 500
+    else:
+        return jsonify({"error": "Could not connect to the database"}), 500
+
+# get available ids 
+@app.route('/api/available_ids')
+def get_availableIds():
+    connect = connect_db()
+    if connect:
+        cursor = connect.cursor(dictionary=True)
+        try:
+            query = """
+                SELECT * FROM available_ids
+            """
+            cursor.execute(query)
+            data = cursor.fetchall()
+            all_ids = []
+            for ids in data:
+                id = {
+                    'id': ids['id']
+                }
+                all_ids.append(id)
+            cursor.close()
+            close_db(connect)
+            return jsonify(all_ids)
+        except mysql.connector.Error as err:
+            print(f"error fetching available ids:{err}")
+            cursor.close()
+            close_db(connect)
+            return jsonify({"error": "failed to fetch available ids"}), 500
+    else:
+        return jsonify({"error": "Could not connect to the database"}), 500
+    
 #edit employees based on id 
 @app.route('/api/employees/<int:employee_id>', methods=['PUT'])
 def edit_employee(employee_id):
@@ -233,6 +336,56 @@ def edit_employee(employee_id):
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
+#search employee based on name
+@app.route('/api/employees/search/<name>', methods=['GET'])
+def search_employees(name):
+    connect = connect_db()
+    if connect:
+        cursor = connect.cursor(dictionary=True)
+        try:
+            query = """
+                SELECT
+                    e.Id,
+                    e.fname,
+                    e.lname,
+                    c.companyName,
+                    c.companyColor,
+                    e.address,
+                    e.city,
+                    e.country,
+                    e.photo
+                FROM employees e
+                LEFT JOIN company c ON e.companyId = c.companyId
+                WHERE LOWER(e.fname) LIKE LOWER(%s) OR LOWER(e.lname) LIKE LOWER(%s)
+            """
+            cursor.execute(query, (f"%{name}%", f"%{name}%"))
+            employees = cursor.fetchall()
+
+            employee_list = []
+            for emp in employees:
+                employee={
+                    'fname': emp['fname'],
+                    'lname': emp['lname'],
+                    'company': emp['companyName'],
+                    'address': emp['address'],
+                    'country': emp['country'],
+                    'city': emp['city'],
+                    'color': emp['companyColor'],
+                    'photo': emp['photo'],
+                    'employeeId': emp['Id'],
+                }
+                employee_list.append(employee)
+            cursor.close()
+            close_db(connect)
+            return jsonify(employee_list), 200
+
+        except mysql.connector.Error as err:
+            print(f"Error searching employees: {err}")
+            cursor.close()
+            close_db(connect)
+            return jsonify({"error": f"Failed to search employees: {err}"}), 500
+    else:
+        return jsonify({"error": "Could not connect to the database"}), 500
 # users login
 @app.route('/api/login', methods=['POST'])
 def login():

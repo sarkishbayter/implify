@@ -206,13 +206,19 @@ header{
     padding-left: 15px;
 }
 
-.navbar-nav a , .add-action{
+.navbar-nav a , .add-action,.add-companie-button{
     color:rgb(82, 123, 211);
     font-size: 16px;
     font-weight: bold;
 }
 
 .navbar-nav .add-action{
+    
+    border-style: none;
+    background-color:transparent;
+    
+}
+.navbar-nav .add-companie-button{
     
     border-style: none;
     background-color:transparent;
@@ -466,7 +472,7 @@ header{
 margin-top: 5px;
 width: 100%;
 }
-#add-section #submit{
+#add-section #emp-submit{
     margin-top: 10px;
 }
 #add-section form label,
@@ -529,6 +535,7 @@ width: 100%;
     gap: 5px;
 }
 /* end login page */
+
 /* pagination */
  #pagination button {
     border-radius: 1cap;
@@ -551,3 +558,74 @@ width: 100%;
     margin-top: 30px; 
 }
 /*end pagination */
+/*add companie section*/
+#add-companie { 
+    
+    margin: 140px auto;
+    padding: 20px;
+    height: fit-content;
+    width: 500px;
+    border: 5px solid transparent;
+    border-image: linear-gradient(to right, yellow, green, blue, indigo, violet, red);
+    border-image-slice: 1;
+}
+#add-companie form {
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 2px; 
+}
+#add-companie .back-to-main{
+   margin-top: 5px;
+   width: 100%;
+}
+#add-companie #comp-submit{
+    margin-top: 10px;
+}
+#add-companie form label,
+#add-companie form input {
+    width: 100%; 
+}
+
+
+#add-companie p {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+/* search section */
+#search-section {
+    display: flex;
+    align-items: center;
+    margin-left: 30px;
+}
+#search-section form {
+    display: flex; 
+    flex-grow: 1; 
+    margin-right: 10px; 
+}
+#search-employee {
+    flex-grow: 1; 
+    padding: 8px;
+    border-radius: 10px;
+    
+}
+#search-button {
+    padding: 8px 15px;
+    border-radius: 10px;
+    
+}
+#search-back {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9em;
+    
+}
+#search-back:hover {
+    background-color: #ddd;
+}
+/*end search section */
