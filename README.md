@@ -3,6 +3,15 @@
 
 This document outlines the steps to set up and run the Implify project, including the backend (Flask server) and frontend.
 
+## Users
+
+User1: `sarkis`
+Password: `sako1234!!`
+
+User2: `omar`
+Password: `neumann1234`
+
+
 ## Clone the Repository
 
     
