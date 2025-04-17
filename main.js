@@ -1,16 +1,28 @@
 $(document).ready(function () {
     let allCompanies = [];
-    let allIds =[];
-    let allcolors=[];
+    let allIds = [];
+    let allcolors = [];
     let selectedEmployee = null;
     const checkbox_list = document.getElementById("checkbox-list");
     document.body.classList.add('body_index');
-    let currentPage=1;
-    let employeesPerPage=7;
+    let currentPage = 1;
+    let employeesPerPage = 7;
     $("#pagination").hide();
-    
+    $("#sign-up-page").hide();
+    $("#reset-pass-page").hide();
+    $("#forgot-button").prop("disabled", true);
 
-    
+    function checkUsernameInput() {
+        const username = $("#username").val();
+        if (username.trim() !== "") {
+            $("#forgot-button").prop("disabled", false);
+        } else {
+            $("#forgot-button").prop("disabled", true);
+        }
+    }
+    checkUsernameInput();
+    $("#username").on("input", checkUsernameInput);
+
     // Function to delete employees based on id
     function deleteEmployee(employeeId) {
         fetch(`http://127.0.0.1:30000/api/employees/${employeeId}`, { method: 'DELETE' })
@@ -30,7 +42,7 @@ $(document).ready(function () {
     }
 
     // Function to display employees in each page 
-    function displayEmployees(employees) { 
+    function displayEmployees(employees) {
         const container = document.getElementById("employee-container");
         container.innerHTML = '';
 
@@ -74,7 +86,7 @@ $(document).ready(function () {
                 $(card).on("click", function () {
                     $(".employee-card.selected").removeClass("selected");
                     $(this).addClass("selected");
-                    const employee = employees[index]; 
+                    const employee = employees[index];
                     $("#employee-details").data("employeeId", employee.employeeId);
                     $("#details-photo").attr("src", employee.photo);
                     $("#details-name").text(`${employee.fname} ${employee.lname}`).css("color", employee.color);
@@ -113,18 +125,18 @@ $(document).ready(function () {
     }
 
     // Function to fetch and display employees based on selected companies
-    function fetchEmployees(companies, page = 1) { 
+    function fetchEmployees(companies, page = 1) {
         let url = 'http://127.0.0.1:30000/api/employees/list';
-        const requestData={
-            page:page,
-            limit:employeesPerPage
+        const requestData = {
+            page: page,
+            limit: employeesPerPage
         };
         if (companies && companies.length > 0) {
-            requestData.companies=companies;
+            requestData.companies = companies;
         }
 
-        fetch(url,{
-            method:'POST',
+        fetch(url, {
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestData),
         })
@@ -134,17 +146,17 @@ $(document).ready(function () {
                 }
                 return response.json();
             })
-            .then(data => { 
+            .then(data => {
                 displayEmployees(data.employees);
-                displayPagination(data.total); 
+                displayPagination(data.total);
                 currentPage = page;
                 const buttons = document.getElementById("pagination").querySelectorAll('button');
                 buttons.forEach(btn => {
-                  if (parseInt(btn.textContent) === page) {
-                    btn.classList.add('active');
-                  } else {
-                    btn.classList.remove('active');
-                  }
+                    if (parseInt(btn.textContent) === page) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
                 });
 
             })
@@ -154,14 +166,24 @@ $(document).ready(function () {
             });
     }
 
-    // Function to display pagination buttons
-    function displayPagination(totalEmployees) { 
+    // Function to display pagination buttons with next and previous
+    function displayPagination(total) {
         const paginationContainer = document.getElementById("pagination");
         if (paginationContainer) {
             paginationContainer.innerHTML = "";
-            const totalPages = Math.ceil(totalEmployees / employeesPerPage);
+            const totalPages = Math.ceil(total / employeesPerPage);
 
             if (totalPages > 1) {
+                const prevButton = document.createElement("button");
+                prevButton.textContent = "Previous";
+                prevButton.classList.add("prev-button");
+                prevButton.addEventListener("click", () => {
+                    if (currentPage > 1) {
+                        fetchEmployees($(".company-checkbox:checked").map(function () { return $(this).val(); }).get(), currentPage - 1);
+                    }
+                });
+                paginationContainer.appendChild(prevButton);
+
                 for (let i = 1; i <= totalPages; i++) {
                     const pageButton = document.createElement("button");
                     pageButton.textContent = i;
@@ -169,20 +191,31 @@ $(document).ready(function () {
                         const buttons = paginationContainer.querySelectorAll('button');
                         buttons.forEach(btn => btn.classList.remove('active'));
                         pageButton.classList.add('active');
-                        fetchEmployees($(".company-checkbox:checked").map(function () { return $(this).val(); }).get(), i); // Send page number
+                        fetchEmployees($(".company-checkbox:checked").map(function () { return $(this).val(); }).get(), i);
                     });
                     paginationContainer.appendChild(pageButton);
                     if (i === 1 && currentPage === 1) {
                         pageButton.classList.add('active');
                     }
                 }
+
+                const nextButton = document.createElement("button");
+                nextButton.textContent = "Next";
+                nextButton.classList.add("next-button");
+                nextButton.addEventListener("click", () => {
+                    if (currentPage < totalPages) {
+                        fetchEmployees($(".company-checkbox:checked").map(function () { return $(this).val(); }).get(), currentPage + 1);
+                    }
+                });
+                paginationContainer.appendChild(nextButton);
+
                 $("#pagination").show();
             } else {
                 $("#pagination").hide();
             }
         }
     }
-
+    
     // Function to add employee
     function addEmployee(employeeId) {
         $('#add-section form').off('submit').on('submit', function (event) {
@@ -321,7 +354,7 @@ $(document).ready(function () {
                     $("#login-page").hide();
                     $(".container").show();
                     $("#login-message").hide();
-                    
+
                     setTimeout(function () {
                         document.body.classList.remove('body_index');
                         document.body.classList.add('body_main');
@@ -344,20 +377,20 @@ $(document).ready(function () {
                 $("#password").val('');
             });
     }
-    
+
     //function to add new companies
-    function addCompanies(){
+    function addCompanies() {
         $('#add-companie form').off('submit').on('submit', function (event) {
             event.preventDefault();
             const formData = {
-                name:$("#comp-name").val(),
-                id:$("#comp-id-dropdown").val(),
-                color:$("#comp-color-dropdown").val()
+                name: $("#comp-name").val(),
+                id: $("#comp-id-dropdown").val(),
+                color: $("#comp-color-dropdown").val()
             };
-    
+
             if (formData.name == "") {
                 alert("company name can not be empty !!");
-            } else if (formData.id == "") { 
+            } else if (formData.id == "") {
                 alert("Please select a Companie Id.");
             } else {
                 let url = 'http://127.0.0.1:30000/api/companies/add';
@@ -366,35 +399,35 @@ $(document).ready(function () {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData),
                 })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error(`Failed to add company`);
-                    }
-                })
-                .then(data => {
-                    console.log(`company added` );
-                    $('#add-companie form')[0].reset();
-                    alert(`company added successfully !`);
-                    fetch_companies();
-                    fetchEmployees($(".company-checkbox:checked").map(function () { return $(this).val(); }).get());
-                    $("#main-section").show();
-                    $("#employee-details").show();
-                    $(".add-action").prop("disabled", false);
-                    $("#add-companie").hide();
-                    selectedEmployee = null;
-                })
-                .catch(error => {
-                    console.error(`Error adding company:`, error);
-                    alert(`Failed to add company.`);
-                });
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error(`Failed to add company`);
+                        }
+                    })
+                    .then(data => {
+                        console.log(`company added`);
+                        $('#add-companie form')[0].reset();
+                        alert(`company added successfully !`);
+                        fetch_companies();
+                        fetchEmployees($(".company-checkbox:checked").map(function () { return $(this).val(); }).get());
+                        $("#main-section").show();
+                        $("#employee-details").show();
+                        $(".add-action").prop("disabled", false);
+                        $("#add-companie").hide();
+                        selectedEmployee = null;
+                    })
+                    .catch(error => {
+                        console.error(`Error adding company:`, error);
+                        alert(`Failed to add company.`);
+                    });
             }
         });
     }
     //function to search employee by name
     function searchEmployee(employeeName) {
-        
+
         fetch(`http://127.0.0.1:30000/api/employees/search/${encodeURIComponent(employeeName)}`)
             .then(response => {
                 if (!response.ok) {
@@ -402,18 +435,18 @@ $(document).ready(function () {
                 }
                 return response.json();
             })
-            .then(data => { 
+            .then(data => {
                 console.log(data);
                 displayEmployees(data);
-                displayPagination(data.length); 
+                displayPagination(data.length);
                 currentPage = 1;
                 const buttons = document.getElementById("pagination").querySelectorAll('button');
                 buttons.forEach(btn => {
-                  if (parseInt(btn.textContent) === 1) {
-                    btn.classList.add('active');
-                  } else {
-                    btn.classList.remove('active');
-                  }
+                    if (parseInt(btn.textContent) === 1) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
                 });
 
             })
@@ -422,19 +455,137 @@ $(document).ready(function () {
                 document.getElementById("employee-container").innerHTML = '<p>Search Field Should Not Be Empty !!  </p>';
                 $("#pagination").hide();
             });
-        
+
+    }
+    //function to sign up
+    function signUp() {
+        $("#sign-up-page form").off("submit").on("submit", function (event) {
+            event.preventDefault();
+            const username = $("#sign-up-username").val();
+            const pass1 = $("#password1").val();
+            const pass2 = $("#password2").val();
+
+            const formData = {
+                username: username,
+                password: pass1,
+                confirm_password: pass2
+            };
+
+
+            fetch('http://127.0.0.1:30000/api/signup', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.message || "Signup failed");
+
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert("Signup successful:");
+                    console.log("Signup successful:", data);
+                    $("#sign-up-message").text(data.message).show();
+                    $("#sign-up-page").hide();
+                    $("#login-page").show();
+                    $("#sign-up-username").val("");
+                    $("#password1").val("");
+                    $("#password2").val("");
+                })
+                .catch(error => {
+                    console.error("Signup failed:", error);
+                    $("#sign-up-message").text(error.message).show();
+                });
+        });
+    }
+
+    // function reset password 
+    function resetPassword(username) {
+        $("#reset-username").val(username);
+        $("#reset-pass-page form").off("submit").on("submit", function (event) {
+            event.preventDefault();
+            changed_user = $("#reset-username").val();
+
+            const user = changed_user;
+            const pass1 = $("#reset-password1").val();
+            const pass2 = $("#reset-password2").val();
+
+            const formData = {
+                username: user,
+                password: pass1,
+                confirm_password: pass2
+            };
+
+
+            fetch('http://127.0.0.1:30000/api/reset', {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.message || "reset failed");
+
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert("reset successful:");
+                    console.log("reset successful:", data);
+                    $("#reset-message").text(data.message).show();
+                    $("#reset-pass-page").hide();
+                    $("#login-page").show();
+                    $("#username").val("");
+                    $("#password1").val("");
+                    $("#login-message").val("");
+                    $("#reset-username").val("");
+                    $("#reset-password1").val("");
+                    $("#reset-password2").val("");
+                })
+                .catch(error => {
+                    console.error("reset failed:", error);
+                    $("#reset-message").text(error.message).show();
+                });
+
+        });
+
     }
 
     // ... Event listeners ...
-    $("#search-button").on("click", function() {
+    $("#forgot-button").off("click").on("click", function () {
         event.preventDefault();
-        employeeName=$("#search-employee").val();
+        username = $("#username").val();
+        $("#login-page").hide();
+        $("#reset-pass-page").show();
+        resetPassword(username);
+    });
+
+    $("#sign-up-button").off("click").on("click", function () {
+        $("#login-page").hide();
+        $("#sign-up-page").show();
+        $("#sign-up-message").text("").hide();
+        signUp();
+    });
+
+    $("#search-button").on("click", function () {
+        event.preventDefault();
+        employeeName = $("#search-employee").val();
         searchEmployee(employeeName);
 
 
     });
 
-    $(".add-companie-button").off("click").on("click",function(){
+    $(".add-companie-button").off("click").on("click", function () {
         $(".add-action").prop("disabled", true);
         $("#main-section").hide();
         $("#employee-details").hide();
@@ -512,7 +663,7 @@ $(document).ready(function () {
         const selectedCompanyNames = $(".company-checkbox:checked").map(function () {
             return $(this).val();
         }).get();
-        fetchEmployees(selectedCompanyNames,1);
+        fetchEmployees(selectedCompanyNames, 1);
     });
 
     $(".add-action").off("click").on("click", function () {
@@ -548,6 +699,7 @@ $(document).ready(function () {
     setTimeout(() => {
         $(".container").hide();
         $("#login-page").show();
+        $("#sign-up-page").hide();
     }, 1500);
 
 

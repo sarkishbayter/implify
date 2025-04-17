@@ -493,8 +493,8 @@ width: 100%;
     display: none;
     margin: 140px auto;
     padding: 25px;
-    height: 350px;
-    width: 350px;
+    height: 400px;
+    width: 450px;
     border: 5px solid transparent;
     border-image: linear-gradient(to right, yellow, green, blue, indigo, violet, red);
     border-image-slice: 1;
@@ -519,22 +519,151 @@ width: 100%;
 #login-page input::placeholder{
     color: #3a3333;
 }
-#login-page #login-button{
-    margin-top: 30px;
-    margin-bottom: 30px;
-    margin-left: 50px;
-    margin-right: 50px;
+#login-page #login-button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 150px;
+    margin-right: 100px;
     border-radius: 1cap;
+    width: 100px;
+}
+#login-page  #sign-up-button{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 150px;
+    margin-right: 100px;
+    border-radius: 1cap;
+    width: 100px;
+}
+#login-page #forgot-password-container {
+    display: flex; 
+    align-items: center; 
 }
 #login-page #login-message{
-    width: fit-content;
+    height: fit-content;
+    width:fit-content;
+    font-size:small;
+    font-weight: bolder;
+    margin-left: 2px;
+
+}
+#login-page #forgot-button {
+    border-style: none;
+    background-color: transparent;
+    color: #167091;
+    font-weight: bold;
+    margin-left: 10px;
 }
 #login-form{
     display: grid;
     grid-template-columns: 1fr; 
-    gap: 5px;
+    gap: 2px;
 }
 /* end login page */
+/* sign up page */
+#sign-up-page {
+    margin: 140px auto;
+    padding: 25px;
+    height: 350px;
+    width: 350px;
+    border: 5px solid transparent;
+    border-image: linear-gradient(to right, yellow, green, blue, indigo, violet, red);
+    border-image-slice: 1;
+    
+
+}
+#sign-up-page p{
+    margin-top: 2px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em ;
+}
+#sign-up-page #sign-up-username,#password1,#password2 {
+    margin-bottom: 5px;
+    padding: 10px;
+    border: none;
+    background-color: #ccc;
+    border-radius: 1cap;
+    
+    
+}
+#sign-up-page input::placeholder{
+    color: #3a3333;
+}
+
+#sign-up-page  #done-button{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 50px;
+    margin-right: 50px;
+    border-radius: 1cap;
+    width: 190px;
+}
+#sign-up-page #sign-up-message {
+    height: fit-content;
+    width:fit-content;
+    font-size:small;
+    font-weight: bolder;
+    margin-left: 2px;
+}
+#sign-up-form{
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 5px;
+}
+/* end sign up page */
+/*reset page */
+#reset-pass-page {
+    margin: 140px auto;
+    padding: 25px;
+    height: 350px;
+    width: 350px;
+    border: 5px solid transparent;
+    border-image: linear-gradient(to right, yellow, green, blue, indigo, violet, red);
+    border-image-slice: 1;
+    
+
+}
+#reset-pass-page p{
+    margin-top: 2px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em ;
+}
+#reset-pass-page #reset-username,#reset-password1,#reset-password2 {
+    margin-bottom: 5px;
+    padding: 10px;
+    border: none;
+    background-color: #ccc;
+    border-radius: 1cap;
+    
+    
+}
+#reset-pass-page input::placeholder{
+    color: #3a3333;
+}
+
+#reset-pass-page #reset-button{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 50px;
+    margin-right: 50px;
+    border-radius: 1cap;
+    width: 190px;
+}
+#reset-pass-page #reset-message {
+    height: fit-content;
+    width:fit-content;
+    font-size:small;
+    font-weight: bolder;
+    margin-left: 2px;
+}
+#reset-form{
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 5px;
+}
+/* end reset page */
 
 /* pagination */
  #pagination button {

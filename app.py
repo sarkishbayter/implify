@@ -4,7 +4,8 @@ import mysql.connector
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "http://127.0.0.1:5500"}})
+
 
 # db configuration
 my_db = {
@@ -142,8 +143,6 @@ def get_companies():
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
-
-    
 #delete employee based on id 
 @app.route('/api/employees/<int:employee_id>', methods=['DELETE'])
 def delete_employee(employee_id):
@@ -386,6 +385,7 @@ def search_employees(name):
             return jsonify({"error": f"Failed to search employees: {err}"}), 500
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
+
 # users login
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -424,6 +424,108 @@ def login():
     else:
         return jsonify({'success': False, 'message': 'Database connection failed'}), 500
 
+#users sign up
+@app.route('/api/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    confirm_password = data.get('confirm_password')
+
+    if not username or not password or not confirm_password:
+        return jsonify({'success': False, 'message': 'Username, password, and confirm password are required'}), 400
+
+    if password != confirm_password:
+        return jsonify({'success': False, 'message': 'Passwords do not match'}), 400
+
+    if len(username) < 3:
+        return jsonify({'success': False, 'message': 'Username must be at least 3 characters long'}), 400
+
+    if len(password) < 6:
+        return jsonify({'success': False, 'message': 'Password must be at least 6 characters long'}), 400
+
+    connection = connect_db()
+    if connection:
+        cursor = connection.cursor()
+        try:
+            # Check if the username already exists
+            query_check = "SELECT * FROM users WHERE username = %s"
+            cursor.execute(query_check, (username,))
+            existing_user = cursor.fetchone()
+
+            if existing_user:
+                return jsonify({'success': False, 'message': 'Username already exists'}), 409 
+
+            # Hash the password before storing it
+            hashed_password = hash_password(password)
+
+            # Insert the new user into the database
+            query_insert = "INSERT INTO users (username, password) VALUES (%s, %s)"
+            cursor.execute(query_insert, (username, hashed_password))
+            connection.commit()
+
+            return jsonify({'success': True, 'message': 'Signup successful'}), 201 
+
+        except mysql.connector.Error as err:
+            print(f"Error executing query: {err}")
+            connection.rollback()
+            return jsonify({'success': False, 'message': 'Database error during signup'}), 500
+        finally:
+            cursor.close()
+            close_db(connection)
+    else:
+        return jsonify({'success': False, 'message': 'Database connection failed'}), 500
+
+# reset user password 
+@app.route('/api/reset', methods=['PUT'])
+def reset():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    confirm_password = data.get('confirm_password')
+
+
+    if not username or not password or not confirm_password:
+        return jsonify({'success': False, 'message': 'Username ,New password and confirm password are required'}), 400
+    
+    
+    if password != confirm_password:
+        return jsonify({'success': False, 'message': 'Passwords do not match'}), 400
+
+    if len(password) < 6:
+        return jsonify({'success': False, 'message': 'Password must be at least 6 characters long'}), 400
+
+    connection = connect_db()
+    if connection:
+        cursor = connection.cursor()
+        try:
+            # Check if the username exists
+            query_check = "SELECT * FROM users WHERE username = %s"
+            cursor.execute(query_check, (username,))
+            existing_user = cursor.fetchone()
+
+            if not existing_user:
+                return jsonify({'success': False, 'message': 'User do not exists'}), 409 
+
+            # Hash the password before updating it
+            hashed_password = hash_password(password)
+
+            # Update the user's password in the database
+            update_query = "UPDATE users SET password = %s WHERE username = %s"
+            cursor.execute(update_query, (hashed_password, username))
+            connection.commit()
+
+            return jsonify({'success': True, 'message': 'Password Updated successfully'}), 201 
+
+        except mysql.connector.Error as err:
+            print(f"Error executing query: {err}")
+            connection.rollback()
+            return jsonify({'success': False, 'message': 'Database error during reset'}), 500
+        finally:
+            cursor.close()
+            close_db(connection)
+    else:
+        return jsonify({'success': False, 'message': 'Database connection failed'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=30000)
