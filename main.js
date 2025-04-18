@@ -695,11 +695,20 @@ $(document).ready(function () {
         $("#search-employee").val("");
         selectedEmployee = null;
     });
+    $(".back-button").off("click").on("click", function () {
+        $("#sign-up-page").hide();
+        $("#reset-pass-page").hide();
+        $("#login-page").show();
+        $("#reset-message").val("");
+        $("#sign-up-message").val("");
+    });
+
 
     setTimeout(() => {
         $(".container").hide();
         $("#login-page").show();
         $("#sign-up-page").hide();
+
     }, 1500);
 
 
