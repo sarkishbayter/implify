@@ -1,3 +1,5 @@
+CREATE DATABASE implify_db;
+use implify_db;
 -- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
 --
 -- Host: localhost    Database: implify_db
