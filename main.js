@@ -384,14 +384,11 @@ $(document).ready(function () {
             event.preventDefault();
             const formData = {
                 name: $("#comp-name").val(),
-                id: $("#comp-id-dropdown").val(),
-                color: $("#comp-color-dropdown").val()
+                color: $("#comp-color").val()
             };
 
             if (formData.name == "") {
                 alert("company name can not be empty !!");
-            } else if (formData.id == "") {
-                alert("Please select a Companie Id.");
             } else {
                 let url = 'http://127.0.0.1:30000/api/companies/add';
                 fetch(url, {
@@ -399,13 +396,14 @@ $(document).ready(function () {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData),
                 })
-                    .then(response => {
-                        if (response.ok) {
-                            return response.json();
-                        } else {
-                            throw new Error(`Failed to add company`);
-                        }
-                    })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.error || 'Failed to add company');
+                        });
+                    }
+                    return response.json();
+                })
                     .then(data => {
                         console.log(`company added`);
                         $('#add-companie form')[0].reset();
@@ -420,7 +418,7 @@ $(document).ready(function () {
                     })
                     .catch(error => {
                         console.error(`Error adding company:`, error);
-                        alert(`Failed to add company.`);
+                        alert(error);
                     });
             }
         });
@@ -590,54 +588,6 @@ $(document).ready(function () {
         $("#main-section").hide();
         $("#employee-details").hide();
         $("#add-companie").show();
-        const dropDown1 = document.getElementById('comp-color-dropdown');
-        dropDown1.innerHTML = "";
-        // fetching colors
-        fetch('http://127.0.0.1:30000/api/colors')
-            .then(response => {
-                console.log("colors response:", response);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                allcolors = data; // Store colors globally
-                allcolors.forEach(color => {
-                    const option = document.createElement('option');
-                    option.value = color.color;
-                    option.text = color.name;
-                    dropDown1.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching company data:', error);
-                document.getElementById("employee-container").innerHTML = '<p>Failed to load company data.</p>';
-            });
-        //fetching available ids 
-        const dropDown2 = document.getElementById('comp-id-dropdown');
-        dropDown2.innerHTML = "";
-        fetch('http://127.0.0.1:30000/api/available_ids')
-            .then(response => {
-                console.log("colors response:", response);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                allIds = data; // Store ids globally
-                allIds.forEach(id => {
-                    const option = document.createElement('option');
-                    option.value = id.id;
-                    option.text = id.id;
-                    dropDown2.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching company data:', error);
-                document.getElementById("employee-container").innerHTML = '<p>Failed to load company data.</p>';
-            });
         addCompanies();
     });
 
@@ -689,12 +639,13 @@ $(document).ready(function () {
         $("#main-section").show();
         $("#employee-details").show();
         $("#add-section").hide();
+        $("#add-companie").hide();
         $(".add-action").prop("disabled", false);
         $(".add-companie-button").prop("disabled", false);
         $('#add-section form')[0].reset();
-        $("#search-employee").val("");
         selectedEmployee = null;
     });
+
     $(".back-button").off("click").on("click", function () {
         $("#sign-up-page").hide();
         $("#reset-pass-page").hide();
@@ -703,6 +654,17 @@ $(document).ready(function () {
         $("#sign-up-message").val("");
     });
 
+    $("#search-back").off("click").on("click",function () {
+        $("#search-employee").val("");
+        fetchEmployees($(".company-checkbox:checked").map(function () { return $(this).val(); }).get());
+        $("#main-section").show();
+        $("#employee-details").show();
+        $("#add-companie").hide();
+        $("#add-section").hide();
+        $(".add-companie-button").prop("disabled", false);
+        $(".add-action").prop("disabled", false);
+
+    });
 
     setTimeout(() => {
         $(".container").hide();

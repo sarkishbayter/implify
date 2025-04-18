@@ -209,32 +209,32 @@ def add_company():
         try:
             data = request.get_json()
             name = data.get('name')
-            company_id = data.get('id')  # Use a more specific variable name
             color = data.get('color')
+
+            # Check if the company name already exists
+            check_existing_query = "SELECT companyId FROM company WHERE companyName = %s"
+            cursor.execute(check_existing_query, (name,))
+            existing_company = cursor.fetchone()
+
+            if existing_company:
+                cursor.close()
+                close_db(connect)
+                return jsonify({"error": "Company already exists !!!"}), 409 
 
             #  Add the new company 
             insert_company_query = """
-                INSERT INTO company (companyName, companyId, companyColor)
-                VALUES (%s, %s, %s)
+                INSERT INTO company (companyName,companyColor)
+                VALUES (%s, %s)
             """
-            cursor.execute(insert_company_query, (name, company_id, color))
+            cursor.execute(insert_company_query, (name,color))
             connect.commit()
 
-            # Delete the used ID from available_ids 
-            delete_id_query = "DELETE FROM available_ids WHERE id = %s"
-            cursor.execute(delete_id_query, (company_id,))
-            connect.commit()
-
-            #  Delete the used color from colors 
-            delete_color_query = "DELETE FROM colors WHERE hex_code = %s"
-            cursor.execute(delete_color_query, (color,))
-            connect.commit()
 
             cursor.close()
             close_db(connect)
             return jsonify({"message": "company added successfully"}), 201
         except mysql.connector.Error as err:
-            print(f"Error adding company and deleting related data: {err}")
+            print(f"Error adding company : {err}")
             connect.rollback()  # Rollback changes in case of error
             cursor.close()
             close_db(connect)

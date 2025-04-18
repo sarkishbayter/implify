@@ -718,6 +718,9 @@ width: 100%;
     grid-template-columns: 1fr; 
     gap: 2px; 
 }
+#add-companie #comp-color {
+    width: 50px;
+}
 #add-companie .back-to-main{
    margin-top: 5px;
    width: 100%;
