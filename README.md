@@ -6,7 +6,7 @@ This document outlines the steps to set up and run the Implify project, includin
 ## Users
 
 User1: `sarkis`
-Password: `sako1234!!`
+Password: `sako1234`
 
 User2: `omar`
 Password: `neumann1234`
