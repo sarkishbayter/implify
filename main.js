@@ -223,7 +223,6 @@ $(document).ready(function () {
             const formData = {
                 fname: $('#fname').val(),
                 lname: $('#lname').val(),
-                id: $('#id').val(),
                 companyId: $('#companie-dropdown').val(),
                 address: $('#address').val(),
                 city: $('#city').val(),
@@ -236,7 +235,7 @@ $(document).ready(function () {
                 let url = 'http://127.0.0.1:30000/api/employees/add';
                 let method = 'POST';
                 if (employeeId) {
-                    url += `/${employeeId}`;
+                    url = `http://127.0.0.1:30000/api/employees/edit/${employeeId}`;
                     method = 'PUT';
                 }
                 fetch(url, {
@@ -275,7 +274,6 @@ $(document).ready(function () {
     function editEmployee(employee) {
         $('#fname').val(employee.fname);
         $('#lname').val(employee.lname);
-        $('#id').val(employee.employeeId).prop('readonly', true);
         $('#companie-dropdown').val(employee.companyId);
         $('#address').val(employee.address);
         $('#city').val(employee.city);

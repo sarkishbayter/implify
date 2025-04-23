@@ -173,10 +173,9 @@ def add_employee():
     if connect:
         cursor = connect.cursor()
         try:
-            data = request.get_json() # lot of data --> prefered json form 
+            data = request.get_json()
             fname = data.get('fname')
             lname = data.get('lname')
-            employee_id = data.get('id')
             company_id = data.get('companyId')
             address = data.get('address')
             city = data.get('city')
@@ -184,10 +183,10 @@ def add_employee():
             photo = data.get('photo')
 
             query = """
-                INSERT INTO employees (Id, fname, lname, companyId, address, city, country, photo)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO employees (fname, lname, companyId, address, city, country, photo)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
-            cursor.execute(query, (employee_id, fname, lname, company_id, address, city, country, photo))
+            cursor.execute(query, (fname, lname, company_id, address, city, country, photo))
             connect.commit()
             cursor.close()
             close_db(connect)
@@ -200,7 +199,7 @@ def add_employee():
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
-# add companie
+# add companies
 @app.route('/api/companies/add', methods=['POST'])
 def add_company():
     connect = connect_db()
@@ -242,68 +241,8 @@ def add_company():
     else:
         return jsonify({"error": "Could not connect to the database"}), 500
 
-
-# get all colors 
-@app.route('/api/colors')
-def get_colors():
-    connect = connect_db()
-    if connect:
-        cursor = connect.cursor(dictionary=True)
-        try:
-            query = """
-                SELECT * FROM colors
-            """
-            cursor.execute(query)
-            data = cursor.fetchall()
-            all_colors = []
-            for c in data:
-                color = {
-                    'name': c['name'],
-                    'color': c['hex_code']
-                }
-                all_colors.append(color)
-            cursor.close()
-            close_db(connect)
-            return jsonify(all_colors)
-        except mysql.connector.Error as err:
-            print(f"error fetching colors:{err}")
-            cursor.close()
-            close_db(connect)
-            return jsonify({"error": "failed to fetch colors"}), 500
-    else:
-        return jsonify({"error": "Could not connect to the database"}), 500
-
-# get available ids 
-@app.route('/api/available_ids')
-def get_availableIds():
-    connect = connect_db()
-    if connect:
-        cursor = connect.cursor(dictionary=True)
-        try:
-            query = """
-                SELECT * FROM available_ids
-            """
-            cursor.execute(query)
-            data = cursor.fetchall()
-            all_ids = []
-            for ids in data:
-                id = {
-                    'id': ids['id']
-                }
-                all_ids.append(id)
-            cursor.close()
-            close_db(connect)
-            return jsonify(all_ids)
-        except mysql.connector.Error as err:
-            print(f"error fetching available ids:{err}")
-            cursor.close()
-            close_db(connect)
-            return jsonify({"error": "failed to fetch available ids"}), 500
-    else:
-        return jsonify({"error": "Could not connect to the database"}), 500
-    
 #edit employees based on id 
-@app.route('/api/employees/<int:employee_id>', methods=['PUT'])
+@app.route('/api/employees/edit/<int:employee_id>', methods=['PUT'])
 def edit_employee(employee_id):
     connect = connect_db()
     if connect:
