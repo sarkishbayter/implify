@@ -576,6 +576,7 @@ $(document).ready(function () {
     $("#search-button").on("click", function () {
         event.preventDefault();
         employeeName = $("#search-employee").val();
+        $("#checkbox-list input[type='checkbox']:checked").prop("checked", false);
         searchEmployee(employeeName);
 
 
@@ -663,7 +664,11 @@ $(document).ready(function () {
         $(".add-action").prop("disabled", false);
 
     });
-
+    
+	$("#logout-button").on("click", function () {
+        location.reload(); // Refreshes the page
+    });
+    
     setTimeout(() => {
         $(".container").hide();
         $("#login-page").show();
